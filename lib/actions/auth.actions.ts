@@ -42,7 +42,23 @@ export async function login(formData: FormData) {
     }
 
     if (!user.isActive) {
+      // [NEW - SuperAdmin] Check if account is suspended — show a specific message
+      if ((user as any).isSuspended) {
+        return {
+          success: false,
+          error: "Account suspended. Please contact support for assistance.",
+        };
+      }
       return { success: false, error: "Compte désactivé" };
+    }
+
+    // Check if patient is approved (if user is a patient)
+    if (user.role === "PATIENT" && user.patient && !user.patient.isActive) {
+      return {
+        success: false,
+        error:
+          "Votre compte est en attente d'approbation par un administrateur. Veuillez réessayer plus tard.",
+      };
     }
 
     // Verify password
@@ -152,7 +168,7 @@ export async function register(formData: FormData) {
     // Generate individual Aptos wallet for this user
     const wallet = await generateUserWallet();
 
-    // Create user (default role: PATIENT)
+    // Create user (default role: PATIENT) - starts as inactive, needs admin approval
     const user = await (prisma as any).user.create({
       data: {
         email: validated.email,
@@ -161,8 +177,21 @@ export async function register(formData: FormData) {
         lastName: validated.lastName,
         phoneNumber: validated.phoneNumber,
         role: "PATIENT",
+        isActive: false, // User starts inactive - requires admin approval
         blockchainAddress: wallet.address,
         blockchainPrivateKey: encryptPrivateKey(wallet.privateKey),
+      },
+    });
+
+    // Create Patient record immediately so admin can see pending patients
+    const medicalRecordNumber = `MR-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    await prisma.patient.create({
+      data: {
+        userId: user.id,
+        medicalRecordNumber,
+        dateOfBirth: new Date(),
+        gender: "OTHER",
+        isActive: false, // Patient starts as pending - needs admin approval
       },
     });
 
@@ -271,6 +300,11 @@ export async function getCurrentUser() {
       return null;
     }
 
+    // [NEW - SuperAdmin] Block soft-deleted users from session
+    if ((user as any).isDeleted) {
+      return null;
+    }
+
     return {
       id: user.id,
       email: user.email,
@@ -287,5 +321,33 @@ export async function getCurrentUser() {
   } catch (error) {
     console.error("Get current user error:", error);
     return null;
+  }
+}
+
+export async function changePasswordFirstLogin(
+  userId: string,
+  password: string
+) {
+  try {
+    const passwordHash = await hashPassword(password);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        passwordHash,
+        updatedAt: new Date(),
+      },
+    });
+
+    return {
+      success: true,
+      message: "Mot de passe mis a jour avec succes",
+    };
+  } catch (error) {
+    console.error("Change password first login error:", error);
+    return {
+      success: false,
+      error: "Erreur lors du changement de mot de passe",
+    };
   }
 }

@@ -32,13 +32,7 @@ const tourGuides: TourGuide[] = [
     title: "Notifications de santé",
     shortDescription: "Restez informé des changements",
   },
-  {
-    id: "rendez-vous",
-    label: "Rendez-vous",
-    icon: "📅",
-    title: "Planification médicale",
-    shortDescription: "Gérez vos consultations",
-  },
+
   {
     id: "rapports-medicaux",
     label: "Rapports médicaux",
@@ -214,10 +208,10 @@ export function OnboardingTour({ isOpen, onComplete }: OnboardingTourProps) {
             <span className="text-3xl shrink-0">{currentGuide.icon}</span>
             <div className="flex-1 min-w-0">
               <h3 className="text-white font-bold text-base leading-tight">
-                Vous avez {tourGuides.length} nouvelles notifications
+                {currentGuide.label}
               </h3>
               <p className="text-red-100 text-sm line-clamp-1">
-                {currentGuide.title}
+                {currentGuide.title} - {currentGuide.shortDescription}
               </p>
             </div>
           </div>

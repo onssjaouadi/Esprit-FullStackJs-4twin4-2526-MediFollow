@@ -781,7 +781,7 @@ export default function VitalsPage() {
                               key={idx}
                               className={`flex items-center gap-2 text-sm ${
                                 evaluation.severity === "CRITICAL"
-                                  ? "text-red-700"
+                                  ? "text-red-800"
                                   : evaluation.severity === "WARNING"
                                     ? "text-orange-700"
                                     : "text-blue-700"
@@ -969,6 +969,7 @@ export default function VitalsPage() {
                       type="range"
                       min="0"
                       max="5"
+                      aria-label="Niveau de fatigue"
                       value={symptoms.fatigue}
                       onChange={(e) =>
                         handleGeneralSymptomChange(
@@ -1010,6 +1011,7 @@ export default function VitalsPage() {
                       type="range"
                       min="0"
                       max="5"
+                      aria-label="Niveau de perte d'appétit"
                       value={symptoms.lossOfAppetite}
                       onChange={(e) =>
                         handleGeneralSymptomChange(
@@ -1048,6 +1050,7 @@ export default function VitalsPage() {
                             type="range"
                             min="0"
                             max="10"
+                            aria-label="Niveau de douleur thoracique"
                             value={symptoms.specialtySymptoms.chestPain || 0}
                             onChange={(e) =>
                               handleSpecialtySymptomChange(
@@ -1097,6 +1100,7 @@ export default function VitalsPage() {
                             type="range"
                             min="0"
                             max="5"
+                            aria-label="Niveau d'essoufflement"
                             value={symptoms.specialtySymptoms.shortness || 0}
                             onChange={(e) =>
                               handleSpecialtySymptomChange(
@@ -1162,6 +1166,7 @@ export default function VitalsPage() {
                             type="range"
                             min="0"
                             max="5"
+                            aria-label="Niveau de nausée"
                             value={symptoms.specialtySymptoms.nausea || 0}
                             onChange={(e) =>
                               handleSpecialtySymptomChange(

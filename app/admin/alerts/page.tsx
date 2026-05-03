@@ -173,28 +173,28 @@ export default function AdminAlertsPage() {
   function getSeverityColor(severity: string) {
     switch (severity) {
       case "CRITICAL":
-        return "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400";
+        return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400";
       case "HIGH":
-        return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400";
       case "MEDIUM":
-        return "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400";
       case "LOW":
-        return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
       default:
-        return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400";
     }
   }
 
   function getStatusColor(status: string) {
     switch (status) {
       case "OPEN":
-        return "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
+        return "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-400";
       case "ACKNOWLEDGED":
-        return "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400";
+        return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400";
       case "RESOLVED":
-        return "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+        return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400";
       default:
-        return "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-400";
+        return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400";
     }
   }
 
@@ -294,6 +294,7 @@ export default function AdminAlertsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by message, type or email..."
+              aria-label="Search alerts"
               className="w-full rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-3 pl-12 pr-4 text-sm focus:border-indigo-500 focus:outline-none dark:text-white"
             />
           </div>
@@ -302,6 +303,7 @@ export default function AdminAlertsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
+              aria-label="Filter by status"
               className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm dark:text-white"
             >
               <option value="ALL">All statuses</option>
@@ -313,6 +315,7 @@ export default function AdminAlertsPage() {
             <select
               value={severityFilter}
               onChange={(e) => setSeverityFilter(e.target.value)}
+              aria-label="Filter by severity"
               className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm dark:text-white"
             >
               <option value="ALL">All severities</option>
@@ -326,6 +329,7 @@ export default function AdminAlertsPage() {
               type="date"
               value={dateFrom}
               onChange={(e) => setDateFrom(e.target.value)}
+              aria-label="Filter from date"
               className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm dark:text-white"
             />
 
@@ -333,6 +337,7 @@ export default function AdminAlertsPage() {
               type="date"
               value={dateTo}
               onChange={(e) => setDateTo(e.target.value)}
+              aria-label="Filter to date"
               className="rounded-xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-sm dark:text-white"
             />
           </div>
@@ -455,7 +460,7 @@ export default function AdminAlertsPage() {
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-6">
               <div>
-                <p className="text-[10px] uppercase font-bold text-gray-500">
+                <p className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400">
                   Total
                 </p>
                 <p className="text-xl font-black text-gray-900 dark:text-white">
@@ -463,7 +468,7 @@ export default function AdminAlertsPage() {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold text-orange-500">
+                <p className="text-[10px] uppercase font-bold text-orange-700 dark:text-orange-500">
                   Open
                 </p>
                 <p className="text-xl font-black text-orange-600">
@@ -471,7 +476,7 @@ export default function AdminAlertsPage() {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold text-indigo-500">
+                <p className="text-[10px] uppercase font-bold text-indigo-700 dark:text-indigo-400">
                   Acknowledged
                 </p>
                 <p className="text-xl font-black text-indigo-600 dark:text-indigo-400">
@@ -479,7 +484,7 @@ export default function AdminAlertsPage() {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] uppercase font-bold text-emerald-500">
+                <p className="text-[10px] uppercase font-bold text-emerald-700 dark:text-emerald-500">
                   Resolved
                 </p>
                 <p className="text-xl font-black text-emerald-600">

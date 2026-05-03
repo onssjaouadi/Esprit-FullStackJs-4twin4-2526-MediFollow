@@ -314,12 +314,7 @@ function PatientLayoutInner({ children }: { children: ReactNode }) {
       badge: openAlertsCount,
       guideId: "alertes",
     },
-    {
-      icon: Calendar,
-      label: "Rendez-vous",
-      href: "/dashboard/patient/appointments",
-      guideId: "rendez-vous",
-    },
+
     {
       icon: FileText,
       label: "Rapports médicaux",
@@ -620,7 +615,7 @@ function PatientLayoutInner({ children }: { children: ReactNode }) {
                                   "bg-yellow-50 text-yellow-700 border-yellow-200",
                                 HIGH: "bg-orange-50 text-orange-700 border-orange-200",
                                 CRITICAL:
-                                  "bg-red-50 text-red-700 border-red-200",
+                                  "bg-red-50 text-red-800 border-red-200",
                               };
                               return (
                                 <Link
@@ -743,7 +738,7 @@ function PatientLayoutInner({ children }: { children: ReactNode }) {
                   onClick={() => setWalletModalOpen(true)}
                   className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium transition-all border ${
                     user?.blockchainAddress
-                      ? "border-red-500/30 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20"
+                      ? "border-red-500/30 bg-red-50 dark:bg-red-500/10 text-red-800 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20"
                       : "border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
                 >
@@ -856,7 +851,7 @@ function PatientLayoutInner({ children }: { children: ReactNode }) {
                 <div className="flex gap-3">
                   <button
                     onClick={handleCopyWallet}
-                    className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 border border-red-200 dark:border-red-500/30 transition-colors"
+                    className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-medium bg-red-50 dark:bg-red-500/10 text-red-800 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-500/20 border border-red-200 dark:border-red-500/30 transition-colors"
                   >
                     {walletCopied ? (
                       <Check className="size-4" />

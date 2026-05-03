@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
   PerspectiveCamera,
@@ -10,6 +10,7 @@ import {
   useGLTF,
 } from "@react-three/drei";
 import { Activity, Heart, Thermometer, Wind } from "lucide-react";
+import SafeCanvas from "./SafeCanvas";
 
 // Composant pour afficher les points de mesure vitaux
 function VitalPoint({
@@ -221,7 +222,7 @@ export default function HumanBody3DModel() {
       )}
 
       {/* Canvas Three.js */}
-      <Canvas shadows camera={{ position: [0, 0, 4], fov: 50 }}>
+      <SafeCanvas shadows camera={{ position: [0, 0, 4], fov: 50 }}>
         <PerspectiveCamera makeDefault position={[0, 0, 4]} fov={50} />
         <OrbitControls
           enableZoom={true}
@@ -270,7 +271,7 @@ export default function HumanBody3DModel() {
             transparent
           />
         </mesh>
-      </Canvas>
+      </SafeCanvas>
 
       {/* Légende et contrôles */}
       <div className="absolute bottom-4 left-4 z-10 space-y-2">

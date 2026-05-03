@@ -17,6 +17,8 @@ import {
   Bot,
   Send,
   ArrowRight,
+  Mic,
+  Volume2,
 } from "lucide-react";
 
 interface Stats {
@@ -29,6 +31,13 @@ interface Stats {
   resolvedAlerts: number;
   userTrend7d?: number[];
   alertTrend7d?: number[];
+  // AI Stats
+  averageRiskScore: number;
+  criticalRiskPatients: number;
+  highRiskPatients: number;
+  totalPredictions: number;
+  highProbabilityPredictions: number;
+  urgentRecommendations: number;
 }
 
 interface FeedEntry {
@@ -202,6 +211,10 @@ export default function LiveAdminDashboard({
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
   const [aiResult, setAiResult] = useState<AiCopilotResult | null>(null);
+  const [voiceListening, setVoiceListening] = useState(false);
+  const [voiceStatus, setVoiceStatus] = useState(
+    "Tap the microphone and ask about users, patients, alerts, or services."
+  );
 
   const refreshStats = useCallback(async () => {
     try {
@@ -231,7 +244,15 @@ export default function LiveAdminDashboard({
 
       const payload = await response.json();
       if (response.ok && payload?.success && payload?.result) {
-        setAiResult(payload.result as AiCopilotResult);
+        const result = payload.result as AiCopilotResult;
+        setAiResult(result);
+        if (typeof window !== "undefined" && "speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          const utterance = new SpeechSynthesisUtterance(result.answer);
+          utterance.rate = 0.95;
+          utterance.pitch = 1;
+          window.speechSynthesis.speak(utterance);
+        }
       } else {
         setAiResult(null);
         setAiError(payload?.error || "Copilot is unavailable right now.");
@@ -244,11 +265,135 @@ export default function LiveAdminDashboard({
     }
   }, []);
 
+  const recordAndTranscribe = useCallback(async () => {
+    if (
+      typeof navigator === "undefined" ||
+      !navigator.mediaDevices?.getUserMedia ||
+      typeof MediaRecorder === "undefined"
+    ) {
+      setAiError("Voice recording is not available in this browser.");
+      return;
+    }
+
+    setVoiceListening(true);
+    setAiError(null);
+    setVoiceStatus("Recording... speak now.");
+
+    let stream: MediaStream | null = null;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mimeType = [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/mp4",
+      ].find((type) => MediaRecorder.isTypeSupported(type));
+      const recorder = new MediaRecorder(
+        stream,
+        mimeType ? { mimeType } : undefined
+      );
+      const chunks: Blob[] = [];
+
+      const audioBlob = await new Promise<Blob>((resolve, reject) => {
+        recorder.ondataavailable = (event) => {
+          if (event.data.size > 0) chunks.push(event.data);
+        };
+        recorder.onerror = () => reject(new Error("Recording failed."));
+        recorder.onstop = () => {
+          resolve(new Blob(chunks, { type: mimeType || "audio/webm" }));
+        };
+        recorder.start();
+        window.setTimeout(() => {
+          if (recorder.state !== "inactive") recorder.stop();
+        }, 5000);
+      });
+
+      setVoiceStatus("Transcribing your question...");
+      const formData = new FormData();
+      formData.append("audio", audioBlob, "admin-question.webm");
+
+      const response = await fetch("/api/admin/copilot/transcribe", {
+        method: "POST",
+        body: formData,
+      });
+      const payload = await response.json();
+
+      if (!response.ok || !payload?.success || !payload?.text) {
+        throw new Error(payload?.error || "Voice transcription failed.");
+      }
+
+      setAiQuery(payload.text);
+      setVoiceStatus("Question captured. Answering...");
+      await askCopilot(payload.text);
+    } catch (error) {
+      setAiError(
+        error instanceof Error
+          ? error.message
+          : "I could not process the voice question."
+      );
+    } finally {
+      stream?.getTracks().forEach((track) => track.stop());
+      setVoiceListening(false);
+      setVoiceStatus(
+        "Tap the microphone and ask about users, patients, alerts, or services."
+      );
+    }
+  }, [askCopilot]);
+
+  const startVoiceQuery = useCallback(() => {
+    if (typeof window === "undefined") return;
+
+    const SpeechRecognition =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+      void recordAndTranscribe();
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      setVoiceListening(true);
+      setVoiceStatus("Listening...");
+      setAiError(null);
+    };
+    recognition.onerror = () => {
+      setVoiceListening(false);
+      setVoiceStatus(
+        "Tap the microphone and ask about users, patients, alerts, or services."
+      );
+      setAiError("I could not hear the voice question. Please try again.");
+    };
+    recognition.onend = () => {
+      setVoiceListening(false);
+      setVoiceStatus(
+        "Tap the microphone and ask about users, patients, alerts, or services."
+      );
+    };
+    recognition.onresult = (event: any) => {
+      const transcript = event.results?.[0]?.[0]?.transcript || "";
+      if (transcript) {
+        setAiQuery(transcript);
+        void askCopilot(transcript);
+      }
+    };
+
+    recognition.start();
+  }, [askCopilot, recordAndTranscribe]);
+
   const quickPrompts = [
     "unresolved critical alerts today",
     "user management summary",
     "access permissions review",
     "patients with repeated high bp",
+    "show critical risk patients",
+    "what predictions are available",
+    "urgent recommendations needed",
+    "detect anomalies",
   ];
 
   const addFeedEntry = useCallback((entry: Omit<FeedEntry, "id" | "time">) => {
@@ -441,6 +586,72 @@ export default function LiveAdminDashboard({
         />
       </section>
 
+      {/* AI Risk Intelligence Section */}
+      <section className="mb-8">
+        <div className="mb-6 flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 p-2">
+              <Bot size={20} className="text-white" />
+            </div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+              AI Risk Intelligence
+            </h2>
+          </div>
+          <div className="h-px flex-1 bg-gradient-to-r from-cyan-300/50 to-transparent" />
+        </div>
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
+          <AnimatedStatCard
+            label="Avg Risk Score"
+            value={stats.averageRiskScore}
+            icon={<Shield size={20} />}
+            color="slate"
+            flash={false}
+            trend={[]}
+          />
+          <AnimatedStatCard
+            label="Critical Risk"
+            value={stats.criticalRiskPatients}
+            icon={<AlertCircle size={20} />}
+            color="rose"
+            flash={false}
+            trend={[]}
+          />
+          <AnimatedStatCard
+            label="High Risk"
+            value={stats.highRiskPatients}
+            icon={<AlertCircle size={20} />}
+            color="amber"
+            flash={false}
+            trend={[]}
+          />
+          <AnimatedStatCard
+            label="Predictions"
+            value={stats.totalPredictions}
+            icon={<Sparkles size={20} />}
+            color="indigo"
+            flash={false}
+            trend={[]}
+          />
+          <AnimatedStatCard
+            label="High Prob."
+            value={stats.highProbabilityPredictions}
+            icon={<Sparkles size={20} />}
+            color="emerald"
+            flash={false}
+            trend={[]}
+          />
+          <AnimatedStatCard
+            label="Urgent Actions"
+            value={stats.urgentRecommendations}
+            icon={<Bot size={20} />}
+            color="rose"
+            flash={false}
+            trend={[]}
+          />
+        </div>
+      </section>
+
       <section className="mb-8 grid grid-cols-1 gap-6 xl:grid-cols-3">
         <div className="glass-panel rounded-[2rem] border border-cyan-300/20 p-6 shadow-[0_24px_70px_rgba(2,6,23,0.42)] lg:p-8 xl:col-span-2">
           <div className="mb-6 flex items-center justify-between">
@@ -558,10 +769,32 @@ export default function LiveAdminDashboard({
                 onClick={() => void askCopilot(aiQuery)}
                 disabled={aiLoading || !aiQuery.trim()}
                 className="glass-neon inline-flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-indigo-500 px-3 text-white disabled:opacity-50"
+                aria-label="Envoyer la requête au Copilot"
               >
-                <Send size={15} />
+                <Send size={15} aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={startVoiceQuery}
+                disabled={aiLoading || voiceListening}
+                className={`inline-flex items-center justify-center rounded-xl px-3 text-white transition ${
+                  voiceListening
+                    ? "bg-rose-500 shadow-lg shadow-rose-500/20"
+                    : "bg-slate-900 dark:bg-cyan-500"
+                } disabled:opacity-50`}
+                aria-label="Ask the admin assistant by voice"
+                title="Ask by voice"
+              >
+                <Mic size={15} aria-hidden="true" />
               </button>
             </div>
+
+            <div className="mt-2 flex items-center gap-2 text-[11px] font-bold text-slate-400 dark:text-cyan-100/60">
+              <Volume2 size={13} />
+                <span>
+                  {voiceListening ? voiceStatus : voiceStatus}
+                </span>
+              </div>
 
             <div className="mt-3 flex flex-wrap gap-2">
               {quickPrompts.map((prompt) => (

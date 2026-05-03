@@ -18,6 +18,7 @@ import {
 
 import { getCurrentUser } from "@/lib/actions/auth.actions";
 import { getUserById, updateUser, deleteUser } from "@/lib/actions/admin.actions";
+import { getAllServices, updateService } from "@/lib/actions/service.actions";
 
 export default function EditUserPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -30,6 +31,9 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
   // Data states
   const [user, setUser] = useState<any>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [services, setServices] = useState<any[]>([]);
+  const [currentServiceId, setCurrentServiceId] = useState<string>("");
+  const [loadingServices, setLoadingServices] = useState(false);
   
   const [formData, setFormData] = useState({
     firstName: "",
@@ -62,6 +66,30 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
           phoneNumber: userData.phoneNumber || "",
         });
       }
+
+      // Load services for nurse assignment
+      if (userData?.role === "NURSE") {
+        setLoadingServices(true);
+        try {
+          const servicesRes = await getAllServices();
+          if (servicesRes?.success) {
+            const activeServices = servicesRes.services.filter((s: any) => s.isActive);
+            setServices(activeServices);
+
+            // Find current service assignment
+            const assignedService = activeServices.find((s: any) =>
+              s.teamIds && s.teamIds.includes(params.id)
+            );
+            if (assignedService) {
+              setCurrentServiceId(assignedService.id);
+            }
+          }
+        } catch (error) {
+          console.error("Error loading services:", error);
+        } finally {
+          setLoadingServices(false);
+        }
+      }
     } catch (error) {
       console.error("Loading error:", error);
     } finally {
@@ -90,23 +118,33 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     }
   };
 
-  // Action: Deletion
-  const handleDelete = async () => {
-    setDeleting(true);
+  // Action: Update service assignment for nurses
+  const handleServiceAssignment = async (newServiceId: string) => {
+    if (!user || user.role !== "NURSE") return;
+
     try {
-      const result = await deleteUser(params.id);
-      if (result?.success) {
-        setShowDeleteModal(false);
-        router.push("/dashboard/admin/users"); // Redirect to global list
-        router.refresh();
-      } else {
-        alert(result?.error || "Unable to delete this user.");
+      // Remove from current service if assigned
+      if (currentServiceId) {
+        const currentService = services.find(s => s.id === currentServiceId);
+        if (currentService) {
+          const updatedTeamIds = currentService.teamIds.filter((id: string) => id !== params.id);
+          await updateService(currentServiceId, { teamIds: updatedTeamIds });
+        }
       }
+
+      // Add to new service if selected
+      if (newServiceId) {
+        const newService = services.find(s => s.id === newServiceId);
+        if (newService) {
+          const updatedTeamIds = [...(newService.teamIds || []), params.id];
+          await updateService(newServiceId, { teamIds: updatedTeamIds });
+        }
+      }
+
+      setCurrentServiceId(newServiceId);
     } catch (error) {
-      console.error("Deletion error:", error);
-      alert("Delete failed. Please try again.");
-    } finally {
-      setDeleting(false);
+      console.error("Error updating service assignment:", error);
+      alert("Failed to update service assignment. Please try again.");
     }
   };
 
@@ -229,31 +267,45 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
               </div>
             </section>
 
-            {/* Section: System Role */}
-            <section className="rounded-[32px] border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 p-8">
-              <h3 className="mb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500 flex items-center gap-2">
-                <Shield size={14} className="text-purple-500" /> User Role
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {(["PATIENT", "DOCTOR", "NURSE", "COORDINATOR", "ADMIN"] as const).map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => setFormData({...formData, role: r})}
-                    className={`flex flex-col items-center gap-3 rounded-2xl border-2 p-5 transition-all ${
-                      formData.role === r 
-                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 shadow-sm' 
-                      : 'border-slate-50 dark:border-zinc-800 bg-transparent text-slate-400 dark:text-zinc-600 hover:border-slate-200 dark:hover:border-zinc-700'
-                    }`}
-                  >
-                    {r === "PATIENT" && <Activity size={20} />}
-                    {r === "DOCTOR" && <UserCog size={20} />}
-                    {r === "ADMIN" && <Shield size={20} />}
-                    <span className="text-[10px] font-black uppercase tracking-widest">{r}</span>
-                  </button>
-                ))}
-              </div>
-            </section>
+            {/* Section: Service Assignment (for Nurses) */}
+            {user?.role === "NURSE" && (
+              <section className="rounded-[32px] border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 p-8">
+                <h3 className="mb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500 flex items-center gap-2">
+                  <UserCog size={14} className="text-pink-500" /> Service Assignment
+                </h3>
+
+                {loadingServices ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="animate-spin text-pink-500" size={24} />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-zinc-500 ml-1">
+                      Assigned Service
+                    </label>
+                    <select
+                      value={currentServiceId}
+                      onChange={(e) => handleServiceAssignment(e.target.value)}
+                      className="w-full rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 px-5 py-4 font-bold outline-none focus:border-pink-500 transition-all"
+                    >
+                      <option value="">No service assigned</option>
+                      {services.map((service) => (
+                        <option key={service.id} value={service.id}>
+                          {service.serviceName}
+                        </option>
+                      ))}
+                    </select>
+                    {currentServiceId && (
+                      <p className="text-xs text-slate-500 dark:text-zinc-400">
+                        Nurse is currently assigned to: <span className="font-medium">
+                          {services.find(s => s.id === currentServiceId)?.serviceName}
+                        </span>
+                      </p>
+                    )}
+                  </div>
+                )}
+              </section>
+            )}
 
             {/* Action buttons */}
             <div className="flex items-center justify-end gap-6 pt-4">

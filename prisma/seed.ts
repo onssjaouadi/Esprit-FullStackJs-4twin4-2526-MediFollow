@@ -21,14 +21,16 @@ async function main() {
   await prisma.user.deleteMany();
 
   // Hash passwords
-  const hashedPassword = await bcrypt.hash("Password123!", 10);
+  const adminPassword = await bcrypt.hash("Admin@123456", 10);
+  const doctorPassword = await bcrypt.hash("Doctor@123456", 10);
+  const patientPassword = await bcrypt.hash("Patient@123456", 10);
 
   // Create Admin User
   console.log("👤 Creating admin user...");
   const admin = await prisma.user.create({
     data: {
       email: "admin@medifollow.health",
-      passwordHash: hashedPassword,
+      passwordHash: adminPassword,
       firstName: "Admin",
       lastName: "MediFollow",
       role: "ADMIN",
@@ -42,7 +44,7 @@ async function main() {
   const doctor = await prisma.user.create({
     data: {
       email: "doctor@medifollow.health",
-      passwordHash: hashedPassword,
+      passwordHash: doctorPassword,
       firstName: "Dr. Marie",
       lastName: "Dupont",
       role: "DOCTOR",
@@ -58,7 +60,7 @@ async function main() {
   const patient1User = await prisma.user.create({
     data: {
       email: "patient@medifollow.health",
-      passwordHash: hashedPassword,
+      passwordHash: patientPassword,
       firstName: "Jean",
       lastName: "Martin",
       role: "PATIENT",

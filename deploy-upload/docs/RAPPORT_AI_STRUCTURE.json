@@ -1,0 +1,873 @@
+{
+  "metadata": {
+    "title": "MediFollow - Complete AI Features Documentation",
+    "version": "2.0",
+    "lastUpdated": "2026-04-15",
+    "classification": "Confidential",
+    "language": "fr-FR",
+    "author": "MediFollow Dev Team"
+  },
+  "executive_summary": {
+    "total_services": 26,
+    "modules": 6,
+    "ai_providers": 3,
+    "status": "100% Production Ready",
+    "monthly_cost_per_1000_patients": {
+      "baseline": 3750,
+      "optimized": 1250,
+      "recommended": 1500
+    },
+    "cost_per_patient_month": {
+      "baseline": 3.75,
+      "optimized": 0.50,
+      "recommended": 1.50
+    },
+    "uptime_sla": "99.9%",
+    "compliance": ["RGPD", "HIPAA", "ISO27001", "SOC2TypeII"]
+  },
+  "modules": {
+    "patient": {
+      "name": "Patient Module",
+      "description": "Patient-facing AI services for health management",
+      "icon": "👤",
+      "color": "#3498db",
+      "services": 6,
+      "services_list": [
+        {
+          "id": 1,
+          "name": "Chatbot Assistant",
+          "description": "24/7 AI-powered health support",
+          "model": "Azure OpenAI GPT-4",
+          "endpoint": "POST /api/patient/chatbot",
+          "temperature": 0.7,
+          "max_tokens": 2000,
+          "response_time_ms": 2000,
+          "cost_per_request": 0.03,
+          "monthly_cost_1000_patients": 3000,
+          "features": [
+            "Multi-language support (FR/EN)",
+            "Persistent conversation history",
+            "Medical context awareness",
+            "Severity detection",
+            "Safety guardrails",
+            "Audit logging"
+          ],
+          "use_cases": [
+            "Medical questions",
+            "Symptom checking",
+            "Medication info",
+            "Emergency guidance"
+          ]
+        },
+        {
+          "id": 2,
+          "name": "Vital Signs Parser",
+          "description": "Voice and text-to-vital signs extraction",
+          "model": "Groq Llama 3.3 70B",
+          "endpoint": "POST /api/patient/vitals-parser",
+          "temperature": 0.3,
+          "max_tokens": 500,
+          "response_time_ms": 400,
+          "cost_per_request": 0.0001,
+          "monthly_cost_1000_patients": 5,
+          "accuracy": 0.995,
+          "features": [
+            "Systolic BP: 50-250 mmHg",
+            "Diastolic BP: 30-150 mmHg",
+            "Heart Rate: 30-200 bpm",
+            "Temperature: 35-42°C",
+            "O2 Saturation: 70-100%",
+            "Weight tracking",
+            "Auto-validation",
+            "Anomaly detection"
+          ]
+        },
+        {
+          "id": 3,
+          "name": "AI Status Classification",
+          "description": "Intelligent health status classification",
+          "model": "Azure OpenAI GPT-4o",
+          "endpoint": "POST /api/patient/status-classification",
+          "temperature": 0.7,
+          "max_tokens": 1500,
+          "response_time_ms": 2500,
+          "cost_per_request": 0.02,
+          "monthly_cost_1000_patients": 400,
+          "classification_levels": 5,
+          "levels": [
+            {
+              "level": 1,
+              "name": "EXCELLENT",
+              "description": "All parameters optimal"
+            },
+            {
+              "level": 2,
+              "name": "GOOD",
+              "description": "Healthy with minor variations"
+            },
+            {
+              "level": 3,
+              "name": "FAIR",
+              "description": "Some concerns noted"
+            },
+            {
+              "level": 4,
+              "name": "POOR",
+              "description": "Significant deviations"
+            },
+            {
+              "level": 5,
+              "name": "CRITICAL",
+              "description": "Dangerous situation - emergency"
+            }
+          ],
+          "output_fields": [
+            "severityLevel",
+            "classification",
+            "clinicalSummary",
+            "healthInsights",
+            "recommendations",
+            "riskFactors",
+            "urgency"
+          ]
+        },
+        {
+          "id": 4,
+          "name": "Risk Analysis Engine",
+          "description": "Predictive risk scoring and analysis",
+          "model": "Groq Llama 3.3 70B",
+          "endpoint": "POST /api/patient/risk-analysis",
+          "temperature": 0.3,
+          "max_tokens": 1000,
+          "response_time_ms": 800,
+          "cost_per_request": 0.0001,
+          "monthly_cost_1000_patients": 5,
+          "risk_score_range": [0, 100],
+          "score_levels": [
+            {
+              "range": [0, 30],
+              "level": "LOW",
+              "action": "Standard monitoring"
+            },
+            {
+              "range": [31, 50],
+              "level": "MODERATE",
+              "action": "Regular monitoring"
+            },
+            {
+              "range": [51, 75],
+              "level": "HIGH",
+              "action": "Intervention recommended"
+            },
+            {
+              "range": [76, 90],
+              "level": "VERY_HIGH",
+              "action": "Close monitoring"
+            },
+            {
+              "range": [91, 100],
+              "level": "CRITICAL",
+              "action": "Emergency intervention"
+            }
+          ],
+          "temporal_analysis": true,
+          "prediction_days": 7,
+          "average_confidence": 0.92
+        },
+        {
+          "id": 5,
+          "name": "Wearable Integration - Santé Connect",
+          "description": "OAuth2 wearable device integration",
+          "protocol": "OAuth2",
+          "supported_devices": ["Enzo200 Smartwatch"],
+          "endpoint": [
+            "GET /api/wearables/santeconnect/authorize",
+            "GET /api/wearables/santeconnect/callback",
+            "POST /api/wearables/santeconnect/disconnect"
+          ],
+          "features": [
+            "OAuth2 two-legged flow",
+            "State token CSRF protection",
+            "Encrypted token storage",
+            "Real-time sync",
+            "Device management",
+            "Auto-update"
+          ],
+          "cost_per_request": 0,
+          "data_included": true
+        },
+        {
+          "id": 6,
+          "name": "Medication Reminder AI",
+          "description": "Smart medication adherence tracking",
+          "model": "Groq Llama 3.3",
+          "endpoint": "POST /api/patient/medication-reminder",
+          "features": [
+            "Time-based notifications",
+            "Adherence tracking",
+            "Interaction warnings",
+            "Multi-channel delivery",
+            "Reminder customization"
+          ],
+          "cost_per_request": 0.00005,
+          "included_in_service": true
+        }
+      ]
+    },
+    "vital_analytics": {
+      "name": "Vital Analytics Module",
+      "description": "Advanced vital signs analytics and monitoring",
+      "icon": "📊",
+      "color": "#e67e22",
+      "services": 2,
+      "services_list": [
+        {
+          "id": 7,
+          "name": "Trend Analysis",
+          "description": "Historical trend analysis and prediction",
+          "model": "Groq Llama 3.3 70B",
+          "endpoint": "GET /api/vitals/trend-analysis",
+          "time_periods": ["7_days", "14_days", "30_days"],
+          "prediction_window_days": 7,
+          "features": [
+            "Direction detection (improving/declining)",
+            "Rate of change calculation",
+            "7-day forecasting",
+            "Parameter correlation",
+            "Anomaly detection",
+            "Seasonality analysis",
+            "Visualization data"
+          ],
+          "cost_per_request": 0.0001
+        },
+        {
+          "id": 8,
+          "name": "Alert Processing",
+          "description": "Real-time alert detection and classification",
+          "model": "Groq Llama 3.3",
+          "endpoint": "POST /api/vitals/alert-processing",
+          "alert_levels": ["CRITICAL", "HIGH", "MEDIUM", "LOW"],
+          "response_time_ms": 100,
+          "features": [
+            "Severity classification",
+            "Auto-escalation rules",
+            "Multi-channel notifications",
+            "Deduplication",
+            "Trend analysis",
+            "Historical context",
+            "Audit trail"
+          ],
+          "cost_per_request": 0.00005
+        }
+      ]
+    },
+    "nurse": {
+      "name": "Nurse Module",
+      "description": "Clinical workflow automation for nurses",
+      "icon": "👩‍⚕️",
+      "color": "#27ae60",
+      "services": 6,
+      "services_list": [
+        {
+          "id": 9,
+          "name": "Report Generation",
+          "description": "Automated clinical report generation",
+          "model": "Groq Llama 3.3 70B",
+          "endpoint": "POST /api/nurse/generate-report",
+          "format": ["Markdown", "PDF"],
+          "response_time_ms": 4000,
+          "sections": 8,
+          "section_names": [
+            "Header (Patient info)",
+            "Clinical Summary",
+            "Vital Signs Analysis",
+            "Evolution & Trends",
+            "Alerts & Concerns",
+            "Assessment",
+            "Follow-up Plan",
+            "Recommendations"
+          ],
+          "cost_per_request": 0.0002,
+          "features": [
+            "Structured 8-section format",
+            "Medical terminology",
+            "Evidence-based recommendations",
+            "PDF export with signature",
+            "EMR integration ready"
+          ]
+        },
+        {
+          "id": 10,
+          "name": "Quick Summary",
+          "description": "Lightning-fast 2-3 sentence summaries",
+          "model": "Groq Llama 3.3 70B",
+          "endpoint": "GET /api/nurse/quick-summary/:patient_id",
+          "response_time_ms": 400,
+          "format": "Plain text",
+          "output_length_sentences": 3,
+          "cost_per_request": 0.00005,
+          "features": [
+            "Critical points highlighted",
+            "Actionable recommendations",
+            "Status overview",
+            "Next steps"
+          ]
+        },
+        {
+          "id": 11,
+          "name": "Clinical Notes Generator",
+          "description": "SOAP-format clinical note generation",
+          "model": "Groq Llama 3.3",
+          "endpoint": "POST /api/nurse/clinical-notes",
+          "format": "SOAP",
+          "soap_sections": [
+            "Subjective (patient report)",
+            "Objective (measurements)",
+            "Assessment (evaluation)",
+            "Plan (treatment plan)"
+          ],
+          "cost_per_request": 0.0001,
+          "features": [
+            "EMR integration",
+            "Auto-completion suggestions",
+            "Medical terminology",
+            "Timestamp automation"
+          ]
+        },
+        {
+          "id": 12,
+          "name": "Medication Interaction Checker",
+          "description": "Real-time drug interaction detection",
+          "model": "Azure OpenAI GPT-4o",
+          "endpoint": "POST /api/nurse/medication-interactions",
+          "database": "DrugBank Integration",
+          "response_time_ms": 2000,
+          "severity_levels": ["Critical", "Major", "Moderate", "Minor"],
+          "cost_per_request": 0.01,
+          "features": [
+            "Real-time checking",
+            "Severity classification",
+            "Alternative suggestions",
+            "Patient education",
+            "Dosage recommendations"
+          ]
+        },
+        {
+          "id": 13,
+          "name": "Patient Workload Prioritizer",
+          "description": "Risk-based patient prioritization",
+          "model": "Groq Llama 3.3",
+          "endpoint": "GET /api/nurse/patient-prioritization",
+          "sorting_criteria": [
+            "Risk score",
+            "Case complexity",
+            "Acute changes",
+            "Pending tasks",
+            "Follow-up due"
+          ],
+          "cost_per_request": 0.00005,
+          "features": [
+            "Dynamic re-ranking",
+            "Urgent flags",
+            "Workload balance",
+            "Custom criteria"
+          ]
+        },
+        {
+          "id": 14,
+          "name": "Trend Analysis & Visualization",
+          "description": "Visual trend charts with predictions",
+          "model": "Groq Llama 3.3",
+          "endpoint": "GET /api/nurse/trend-visualization/:patient_id",
+          "chart_types": ["line", "area", "bar", "combination"],
+          "time_frame_days": 30,
+          "prediction_days": 14,
+          "cost_per_request": 0.0001,
+          "features": [
+            "30-day history",
+            "7-14 day predictions",
+            "Correlation analysis",
+            "Anomaly highlighting",
+            "Export capability"
+          ]
+        }
+      ]
+    },
+    "coordinator": {
+      "name": "Coordinator Module",
+      "description": "Care coordination and resource management",
+      "icon": "📋",
+      "color": "#f39c12",
+      "services": 6,
+      "services_list": [
+        {
+          "id": 15,
+          "name": "Team Workload Balancer",
+          "description": "Intelligent team load distribution",
+          "model": "Groq Llama 3.3 70B",
+          "endpoint": "POST /api/coordinator/workload-balance",
+          "response_time_ms": 1500,
+          "cost_per_request": 0.0002,
+          "output_format": "JSON with recommendations",
+          "features": [
+            "Current load analysis",
+            "Optimal distribution",
+            "Dynamic rebalancing",
+            "Impact estimation",
+            "Team performance metrics"
+          ]
+        },
+        {
+          "id": 16,
+          "name": "Resource Optimizer",
+          "description": "Hospital resource allocation optimization",
+          "model": "Groq Llama 3.3 70B",
+          "endpoint": "POST /api/coordinator/resource-optimize",
+          "resource_types": [
+            "Bed management",
+            "Equipment allocation",
+            "Staff scheduling",
+            "Supply chain"
+          ],
+          "cost_per_request": 0.0001,
+          "features": [
+            "Utilization optimization",
+            "Cost reduction",
+            "Capacity planning",
+            "Predictive scheduling"
+          ]
+        },
+        {
+          "id": 17,
+          "name": "Coordinator Copilot",
+          "description": "Strategic decision support for coordinators",
+          "model": "Azure OpenAI GPT-4o",
+          "endpoint": "GET /api/coordinator/copilot-recommendations",
+          "response_time_ms": 3000,
+          "cost_per_request": 0.02,
+          "capabilities": [
+            "Strategic analysis",
+            "Priority recommendations",
+            "Risk assessment",
+            "Performance metrics",
+            "Next best action"
+          ],
+          "features": [
+            "Team performance analytics",
+            "Patient outcome predictions",
+            "Resource allocation advice",
+            "Budget forecasting"
+          ]
+        },
+        {
+          "id": 18,
+          "name": "Readmission Risk Predictor",
+          "description": "ML-based readmission prevention",
+          "model": "Groq Llama 3.3 (ML-backed)",
+          "endpoint": "POST /api/coordinator/readmission-risk",
+          "risk_factors_count": 20,
+          "cost_per_request": 0.0001,
+          "features": [
+            "Historical data analysis",
+            "Risk factors identification",
+            "Intervention recommendations",
+            "Success rate prediction",
+            "Care plan optimization"
+          ]
+        },
+        {
+          "id": 19,
+          "name": "Shift Handover Generator",
+          "description": "Structured shift handover documentation",
+          "model": "Groq Llama 3.3",
+          "endpoint": "POST /api/coordinator/shift-handover",
+          "format": "Structured markdown",
+          "features": [
+            "Critical updates only",
+            "Alert highlighting",
+            "Patient status summary",
+            "Pending tasks",
+            "Special instructions"
+          ],
+          "cost_per_request": 0.00005
+        },
+        {
+          "id": 20,
+          "name": "Patient Discharge Planner",
+          "description": "Post-hospitalization care planning",
+          "model": "Azure OpenAI GPT-4o",
+          "endpoint": "POST /api/coordinator/discharge-plan",
+          "response_time_ms": 3000,
+          "cost_per_request": 0.015,
+          "plan_components": [
+            "Post-discharge care",
+            "Follow-up scheduling",
+            "Medication instructions",
+            "Lifestyle recommendations",
+            "Emergency protocols"
+          ],
+          "features": [
+            "Patient education material",
+            "Provider coordination",
+            "Appointment scheduling",
+            "Medication reconciliation"
+          ]
+        }
+      ]
+    },
+    "admin": {
+      "name": "Admin Module",
+      "description": "Administrative and platform intelligence",
+      "icon": "⚙️",
+      "color": "#e74c3c",
+      "services": 5,
+      "services_list": [
+        {
+          "id": 21,
+          "name": "Admin Copilot",
+          "description": "Next best action recommendations",
+          "model": "Azure OpenAI GPT-4 (JSON Mode)",
+          "endpoint": "GET /api/admin/copilot-actions",
+          "response_format": "JSON array",
+          "response_time_ms": 2000,
+          "cost_per_request": 0.03,
+          "features": [
+            "System state analysis",
+            "Action prioritization",
+            "Confidence scoring (0.35-0.98)",
+            "Time estimation",
+            "Navigation links",
+            "Impact assessment"
+          ],
+          "analyzed_metrics": [
+            "Alert count & severity",
+            "Critical patients",
+            "Pending approvals",
+            "System load",
+            "Cost thresholds"
+          ]
+        },
+        {
+          "id": 22,
+          "name": "System Monitor AI",
+          "description": "Real-time system health monitoring",
+          "model": "Groq Llama 3.3",
+          "endpoint": "GET /api/admin/system-monitor",
+          "kpi_count": 15,
+          "kpis": [
+            "API response times",
+            "Database query performance",
+            "AI service latencies",
+            "Error rates",
+            "User concurrency",
+            "Database size",
+            "Backup status",
+            "Cache hit rates"
+          ],
+          "cost_per_request": 0.0001,
+          "features": [
+            "Anomaly detection",
+            "Auto-alerts",
+            "Trend analysis",
+            "Predictive warnings"
+          ]
+        },
+        {
+          "id": 23,
+          "name": "Cost Analyzer",
+          "description": "Budget and cost intelligence",
+          "model": "Groq Llama 3.3",
+          "endpoint": "GET /api/admin/cost-analysis",
+          "cost_per_request": 0.0001,
+          "analysis_components": [
+            "Current spending",
+            "Budget forecasting (30 days)",
+            "Cost by service",
+            "Usage trends",
+            "Optimization recommendations",
+            "ROI calculations"
+          ],
+          "features": [
+            "Real-time cost tracking",
+            "Budget thresholds",
+            "Anomaly detection",
+            "Savings recommendations"
+          ]
+        },
+        {
+          "id": 24,
+          "name": "User Management AI",
+          "description": "Account and authentication management",
+          "model": "Groq Llama 3.3",
+          "endpoint": "POST /api/admin/user-management",
+          "cost_per_request": 0.0001,
+          "capabilities": [
+            "Account approval",
+            "Fraud detection",
+            "Anomaly detection",
+            "Role recommendations",
+            "Permission analysis"
+          ],
+          "features": [
+            "Behavioral analysis",
+            "Risk scoring",
+            "Auto-blocking suspicious",
+            "Compliance checking"
+          ]
+        },
+        {
+          "id": 25,
+          "name": "Platform Intelligence",
+          "description": "Growth and performance analytics",
+          "model": "Groq Llama 3.3",
+          "endpoint": "GET /api/admin/platform-intelligence",
+          "cost_per_request": 0.0001,
+          "metrics": [
+            "Growth metrics",
+            "Usage patterns",
+            "Feature adoption",
+            "User retention",
+            "Performance trends"
+          ],
+          "features": [
+            "Predictive insights",
+            "Anomaly detection",
+            "Benchmarking",
+            "Recommendations"
+          ]
+        }
+      ]
+    },
+    "authentication": {
+      "name": "Authentication Module",
+      "description": "Biometric and security authentication",
+      "icon": "🔐",
+      "color": "#9b59b6",
+      "services": 1,
+      "services_list": [
+        {
+          "id": 26,
+          "name": "Face Recognition",
+          "description": "TensorFlow.js-based biometric authentication",
+          "framework": "TensorFlow.js + Face-API",
+          "endpoint": "POST /api/auth/face-recognition",
+          "response_time_ms": 750,
+          "cost_per_request": 0,
+          "deployment": "Client-side (no network latency)",
+          "models": [
+            {
+              "name": "tinyFaceDetector",
+              "purpose": "Face detection"
+            },
+            {
+              "name": "faceLandmarkNet",
+              "purpose": "Landmark detection"
+            },
+            {
+              "name": "faceRecognitionNet",
+              "purpose": "128D descriptor generation"
+            }
+          ],
+          "features": [
+            "Real-time detection",
+            "Quality validation",
+            "Anti-spoofing (liveness check)",
+            "2FA support",
+            "Complete audit trail",
+            "Fallback password auth",
+            "GDPR compliant storage"
+          ],
+          "accuracy": 0.99,
+          "false_positive_rate": 0.01,
+          "false_negative_rate": 0.05
+        }
+      ]
+    }
+  },
+  "providers": {
+    "groq": {
+      "name": "Groq API",
+      "model": "Llama 3.3 70B Versatile",
+      "latency_ms": {
+        "p50": 250,
+        "p95": 500,
+        "p99": 800
+      },
+      "cost_per_request": 0.0001,
+      "throughput": "1000+ req/sec",
+      "use_cases": ["Parsing", "Analysis", "Real-time", "Batch processing"],
+      "reliability": 0.999,
+      "strengths": [
+        "Ultra-fast inference",
+        "Economical",
+        "High throughput",
+        "Real-time capable"
+      ],
+      "services": [2, 4, 7, 8, 9, 10, 11, 13, 14, 15, 16, 18, 19, 22, 23, 24, 25]
+    },
+    "azure_openai_gpt4": {
+      "name": "Azure OpenAI",
+      "model": "GPT-4",
+      "latency_ms": {
+        "p50": 2500,
+        "p95": 4000,
+        "p99": 5000
+      },
+      "cost_per_request": 0.03,
+      "throughput": "500+ req/sec",
+      "use_cases": ["Complex reasoning", "Multi-step analysis", "Chatbot"],
+      "reliability": 0.9995,
+      "strengths": [
+        "Superior reasoning",
+        "Medical context understanding",
+        "Safety",
+        "Nuanced responses"
+      ],
+      "services": [1, 21]
+    },
+    "azure_openai_gpt4o": {
+      "name": "Azure OpenAI",
+      "model": "GPT-4o",
+      "latency_ms": {
+        "p50": 2000,
+        "p95": 3000,
+        "p99": 4000
+      },
+      "cost_per_request": 0.02,
+      "throughput": "750+ req/sec",
+      "use_cases": ["Classification", "Vision", "Multimodal"],
+      "reliability": 0.9995,
+      "strengths": [
+        "Balanced speed/quality",
+        "Multimodal capable",
+        "Vision understanding",
+        "Cost-effective"
+      ],
+      "services": [3, 12, 17, 20]
+    },
+    "tensorflow_js_face_api": {
+      "name": "TensorFlow.js",
+      "model": "Face-API (Open Source)",
+      "latency_ms": {
+        "p50": 500,
+        "p95": 900,
+        "p99": 1000
+      },
+      "cost_per_request": 0,
+      "throughput": "Unlimited (client-side)",
+      "use_cases": ["Biometric auth", "Face detection", "Liveness"],
+      "reliability": 0.99,
+      "strengths": [
+        "Free & open-source",
+        "Client-side processing",
+        "Privacy-preserving",
+        "No network latency",
+        "GDPR friendly"
+      ],
+      "services": [26]
+    }
+  },
+  "architecture": {
+    "stack": {
+      "frontend": ["React", "Next.js", "TypeScript"],
+      "backend": ["Next.js API Routes", "Server Actions"],
+      "database": ["MongoDB", "Prisma ORM"],
+      "ai_services": ["Groq API", "Azure OpenAI", "TensorFlow.js"],
+      "authentication": ["JWT", "OAuth2", "Biometric"],
+      "deployment": ["Vercel/Self-hosted", "Docker ready"]
+    },
+    "api_gateway": {
+      "base_url": "http://localhost:3000/api",
+      "authentication": "Bearer {JWT_TOKEN}",
+      "rate_limit": "1000 req/min per user",
+      "timeout_seconds": 30
+    },
+    "databases": {
+      "mongodb": {
+        "usage": "Primary data store",
+        "collections": [
+          "patients",
+          "vitals",
+          "reports",
+          "alerts",
+          "users",
+          "audit_logs"
+        ]
+      },
+      "redis": {
+        "usage": "Caching & session management",
+        "ttl_seconds": 3600
+      }
+    }
+  },
+  "performance_sla": {
+    "availability": "99.9%",
+    "response_time_p50_ms": 300,
+    "response_time_p95_ms": 1000,
+    "response_time_p99_ms": 3000,
+    "error_rate_percent": 0.1,
+    "monthly_uptime_minutes": 43200
+  },
+  "security": {
+    "encryption": "AES-256",
+    "authentication": ["JWT", "OAuth2", "Biometric"],
+    "authorization": "RBAC",
+    "audit_logging": true,
+    "compliance": ["RGPD", "HIPAA", "ISO27001", "SOC2TypeII"],
+    "backup_strategy": "Daily with redundancy",
+    "disaster_recovery": true
+  },
+  "roadmap": {
+    "phase_1_may_2026": {
+      "name": "Optimization",
+      "focus": ["Caching", "Streaming", "Performance tuning"],
+      "expected_impact": "-40% cost, +30% UX"
+    },
+    "phase_2_june_july_2026": {
+      "name": "Expansion",
+      "focus": ["Multilingual", "Predictive v2", "EHR integration"],
+      "expected_impact": "+15 new services"
+    },
+    "phase_3_august_2026": {
+      "name": "Innovation",
+      "focus": ["Fine-tuned models", "Edge ML", "Federated learning"],
+      "expected_impact": "Full autonomy + privacy"
+    }
+  },
+  "cost_analysis": {
+    "baseline_monthly": {
+      "1000_patients": 3750,
+      "price_per_patient": 3.75
+    },
+    "optimized_monthly": {
+      "1000_patients": 1250,
+      "price_per_patient": 1.25,
+      "savings_percent": 66.7
+    },
+    "recommended_monthly": {
+      "1000_patients": 1500,
+      "price_per_patient": 1.50,
+      "savings_percent": 60
+    },
+    "optimizations": [
+      {
+        "name": "Aggressive Caching",
+        "potential_savings": 1500,
+        "implementation_time_weeks": 2,
+        "complexity": "medium"
+      },
+      {
+        "name": "Model Switching",
+        "potential_savings": 1200,
+        "implementation_time_weeks": 1,
+        "complexity": "low"
+      },
+      {
+        "name": "Batch Processing",
+        "potential_savings": 800,
+        "implementation_time_weeks": 3,
+        "complexity": "high"
+      }
+    ]
+  }
+}

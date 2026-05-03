@@ -15,6 +15,7 @@ import {
   ClipboardList,
   Download,
   Clock,
+  Bell,
 } from "lucide-react";
 
 const managementLinks: {
@@ -65,6 +66,11 @@ const infraLinks: {
     label: "Mon Profil",
   },
   {
+    href: "/admin/notifications",
+    icon: <Bell size={20} />,
+    label: "Notifications",
+  },
+  {
     href: "/admin/analytics",
     icon: <TrendingUp size={20} />,
     label: "Analytics",
@@ -88,6 +94,8 @@ function NavItem({
   return (
     <Link
       href={href}
+      // a11y: 4.1.2 Name, Role, Value – announce current page to screen readers
+      aria-current={active ? "page" : undefined}
       className={`flex items-center justify-between rounded-2xl px-4 py-3.5 transition-all ${
         active
           ? "glass-neon bg-gradient-to-r from-cyan-500/35 to-indigo-500/35 text-white dark:text-white"
@@ -95,7 +103,8 @@ function NavItem({
       }`}
     >
       <div className="flex items-center gap-3">
-        {icon}
+        {/* a11y: 1.1.1 Non-text Content – nav icons are decorative; label provides the name */}
+        <span aria-hidden="true">{icon}</span>
         <span className="text-sm font-bold tracking-tight">{label}</span>
       </div>
       {badge > 0 && (
@@ -115,11 +124,16 @@ export default function AdminSidebar() {
     return pathname === href || pathname.startsWith(href + "/");
   };
 
+  // a11y: 2.4.1 Bypass Blocks – aria-label identifies this as the primary nav landmark
   return (
-    <aside className="glass-panel fixed left-0 top-0 hidden h-full w-72 border-r border-slate-200 dark:border-cyan-300/20 lg:block z-40">
+    <aside
+      aria-label="Navigation principale"
+      className="glass-panel fixed left-0 top-0 hidden h-full w-72 border-r border-slate-200 dark:border-cyan-300/20 lg:block z-40"
+    >
       <div className="flex h-20 items-center px-8">
         <Link href="/admin" className="flex items-center gap-3">
-          <div className="glass-neon flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 text-white">
+          {/* a11y: 1.1.1 Non-text Content – logo icon is decorative; brand name follows */}
+          <div aria-hidden="true" className="glass-neon flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-indigo-500 text-white">
             <Zap size={20} fill="currentColor" />
           </div>
           <span className="text-xl font-black text-slate-800 dark:text-white">

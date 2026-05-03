@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFollow - Blockchain Monitor</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      h1 {
+        color: white;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 2.5em;
+      }
+      .card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.2em;
+        margin: 15px 0;
+      }
+      .status-icon {
+        font-size: 1.5em;
+      }
+      .link {
+        color: #667eea;
+        text-decoration: none;
+        font-weight: bold;
+        word-break: break-all;
+      }
+      .link:hover {
+        text-decoration: underline;
+      }
+      .section-title {
+        color: #333;
+        font-size: 1.5em;
+        margin-bottom: 15px;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+      }
+      .test-steps {
+        background: #f8f9fa;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        margin: 15px 0;
+      }
+      .test-steps ol {
+        margin-left: 20px;
+      }
+      .test-steps li {
+        margin: 10px 0;
+        font-size: 1.1em;
+      }
+      .credentials {
+        background: #fff3cd;
+        border: 2px solid #ffc107;
+        border-radius: 8px;
+        padding: 15px;
+        margin: 15px 0;
+      }
+      .credentials strong {
+        color: #856404;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🔐 MediFollow - Blockchain Monitor</h1>
+
+      <div class="card">
+        <h2 class="section-title">📊 Statut Blockchain</h2>
+        <div class="status">
+          <span class="status-icon">✅</span>
+          <span><strong>Smart Contract Déployé:</strong> Opérationnel</span>
+        </div>
+        <div class="status">
+          <span class="status-icon">🌐</span>
+          <span><strong>Network:</strong> Aptos Testnet</span>
+        </div>
+        <div class="status">
+          <span class="status-icon">📝</span>
+          <span><strong>Module:</strong> access_control</span>
+        </div>
+        <div class="status">
+          <span class="status-icon">🔑</span>
+          <span
+            ><strong>Adresse:</strong>
+            <a
+              href="https://explorer.aptoslabs.com/account/0x43f2e7420983c87eb131d936c18237d68f19952aeac6fd49778c7507062347f1?network=testnet"
+              target="_blank"
+              class="link"
+            >
+              0x43f2...347f1
+            </a>
+          </span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">🧪 Guide de Test</h2>
+
+        <div class="credentials">
+          <strong>👨‍⚕️ Identifiants Docteur :</strong><br />
+          Email: <code>doctor@medifollow.health</code><br />
+          Mot de passe: <code>Doctor@123456</code>
+        </div>
+
+        <div class="test-steps">
+          <ol>
+            <li>
+              <strong>Ouvrez l'application :</strong>
+              <a href="http://localhost:3000" target="_blank" class="link"
+                >http://localhost:3000</a
+              >
+            </li>
+            <li>
+              <strong>Connectez-vous</strong> avec les identifiants ci-dessus
+            </li>
+            <li><strong>Cliquez sur "Patients"</strong> dans le menu</li>
+            <li><strong>Sélectionnez "Jean Martin"</strong></li>
+            <li><strong>Scrollez vers "Documents Médicaux"</strong></li>
+            <li>
+              <strong>Les documents s'affichent ?</strong>
+              → La blockchain a vérifié et autorisé l'accès ! ✅
+            </li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">🔗 Liens Blockchain</h2>
+
+        <div class="status">
+          <span class="status-icon">🌍</span>
+          <span
+            ><strong>Explorer Aptos:</strong>
+            <a
+              href="https://explorer.aptoslabs.com/account/0x43f2e7420983c87eb131d936c18237d68f19952aeac6fd49778c7507062347f1/transactions?network=testnet"
+              target="_blank"
+              class="link"
+            >
+              Voir toutes les transactions
+            </a>
+          </span>
+        </div>
+
+        <div class="status">
+          <span class="status-icon">📜</span>
+          <span
+            ><strong>Smart Contract:</strong>
+            <a
+              href="https://explorer.aptoslabs.com/account/0x43f2e7420983c87eb131d936c18237d68f19952aeac6fd49778c7507062347f1/modules?network=testnet"
+              target="_blank"
+              class="link"
+            >
+              Voir le code déployé
+            </a>
+          </span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">💡 Ce qui se passe en coulisses</h2>
+
+        <div class="test-steps">
+          <p><strong>Quand vous accédez aux documents du patient :</strong></p>
+          <ol>
+            <li>🔍 L'application vérifie votre rôle (DOCTOR) dans MongoDB</li>
+            <li>🔐 L'application appelle le smart contract Aptos</li>
+            <li>⛓️ La blockchain vérifie si vous avez la permission d'accès</li>
+            <li>✅ Si OUI : Les documents s'affichent</li>
+            <li>
+              📝 Un log est enregistré sur blockchain (audit trail immutable)
+            </li>
+            <li>❌ Si NON : Accès refusé avec message d'erreur</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

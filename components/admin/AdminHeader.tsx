@@ -37,8 +37,11 @@ export function AdminHeader({ user }: AdminHeaderProps) {
           </div>
         )}
 
-        {/* Avatar */}
-        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 flex items-center justify-center text-white font-bold cursor-pointer hover:scale-105 transition-transform shadow-lg shadow-indigo-500/30">
+        {/* Avatar – decorative, initials announced via sibling name text */}
+        <div
+          aria-hidden="true" // a11y: 1.1.1 Non-text Content – decorative avatar
+          className="h-12 w-12 rounded-2xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 flex items-center justify-center text-white font-bold cursor-pointer hover:scale-105 transition-transform shadow-lg shadow-indigo-500/30"
+        >
           {user?.firstName?.[0]}
           {user?.lastName?.[0]}
         </div>
@@ -55,9 +58,12 @@ export function AdminHeader({ user }: AdminHeaderProps) {
           <button
             onClick={handleLogout}
             title="Se déconnecter"
+            // a11y: 4.1.2 Name, Role, Value – explicit aria-label for icon-only AT fallback
+            aria-label="Se déconnecter"
             className="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm font-bold uppercase tracking-wide text-gray-600 dark:text-gray-300 transition-all hover:border-indigo-300 dark:hover:border-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-500/10"
           >
-            <LogOut size={16} />
+            {/* a11y: 1.1.1 Non-text Content – decorative icon; label is on the button */}
+            <LogOut size={16} aria-hidden="true" />
             <span className="hidden sm:inline">Décon.</span>
           </button>
         </div>

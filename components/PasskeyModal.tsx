@@ -71,12 +71,16 @@ export const PasskeyModal = () => {
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-start justify-between">
             Admin Access Verification
+            {/* a11y: 4.1.2 Name, Role, Value – image used as button needs role + keyboard support */}
             <Image
               src="/assets/icons/close.svg"
-              alt="close"
+              alt="Fermer la fenêtre"
               width={20}
               height={20}
               onClick={() => closeModal()}
+              onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") closeModal(); }}
+              role="button"
+              tabIndex={0}
               className="cursor-pointer"
             />
           </AlertDialogTitle>
@@ -85,10 +89,12 @@ export const PasskeyModal = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div>
+          {/* a11y: 1.3.1 Info and Relationships – label the OTP input group */}
           <InputOTP
             maxLength={6}
             value={passkey}
             onChange={(value) => setPasskey(value)}
+            aria-label="Code d'accès administrateur à 6 chiffres"
           >
             <InputOTPGroup className="shad-otp">
               <InputOTPSlot className="shad-otp-slot" index={0} />
@@ -101,7 +107,8 @@ export const PasskeyModal = () => {
           </InputOTP>
 
           {error && (
-            <p className="shad-error text-14-regular mt-4 flex justify-center">
+            // a11y: 4.1.3 Status Messages – role=alert announces error immediately to AT
+            <p role="alert" className="shad-error text-14-regular mt-4 flex justify-center">
               {error}
             </p>
           )}

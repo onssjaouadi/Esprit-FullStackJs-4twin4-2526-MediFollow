@@ -1,0 +1,433 @@
+// MediFollow - Post-Hospitalization Remote Monitoring Platform
+// Prisma Schema for MongoDB
+// Generated: March 2, 2026
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// USER MANAGEMENT
+// ============================================
+
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  email         String   @unique
+  passwordHash  String
+  firstName     String
+  lastName      String
+  role          Role     @default(PATIENT)
+  phoneNumber   String?
+  profilePhoto  String?
+  isActive      Boolean  @default(true)
+  isApproved    Boolean  @default(true)
+  lastLogin     DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  patient       Patient?
+  auditLogs     AuditLog[]
+  alertsCreated Alert[]    @relation("AlertCreatedBy")
+  alertsAcknowledged Alert[] @relation("AlertAcknowledgedBy")
+  alertsResolved Alert[]    @relation("AlertResolvedBy")
+  sessions      Session[]
+
+  @@map("users")
+}
+
+enum Role {
+  PATIENT
+  DOCTOR
+  NURSE
+  COORDINATOR
+  ADMIN
+  AUDITOR
+}
+
+// ============================================
+// PATIENT MANAGEMENT
+// ============================================
+
+
+
+model Patient {
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String    @unique @db.ObjectId
+  medicalRecordNumber   String    @unique
+  dateOfBirth           DateTime
+  gender                Gender
+  bloodType             BloodType?
+  address               Address?
+  emergencyContact      EmergencyContact?
+  dischargeDate         DateTime?
+  diagnosis             String?
+  medications           Medication[]
+  vitalThresholds       VitalThresholds?
+  isActive              Boolean   @default(true)
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Relations
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vitalRecords          VitalRecord[]
+  symptoms              Symptom[]
+  alerts                Alert[]
+  questionnaires        Questionnaire[]
+
+  @@map("patients")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum BloodType {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+// ============================================
+// EMBEDDED TYPES FOR PATIENT
+// ============================================
+
+type Address {
+  street      String
+  city        String
+  state       String
+  postalCode  String
+  country     String
+}
+
+type EmergencyContact {
+  name         String
+  relationship String
+  phoneNumber  String
+  email        String?
+}
+
+type Medication {
+  name        String
+  dosage      String
+  frequency   String
+  startDate   DateTime
+  endDate     DateTime?
+  notes       String?
+}
+
+type VitalThresholds {
+  systolicBP          VitalRange
+  diastolicBP         VitalRange
+  heartRate           VitalRange
+  temperature         VitalRange
+  oxygenSaturation    VitalRange
+  weight              VitalRange?
+}
+
+type VitalRange {
+  min Float
+  max Float
+}
+
+// ============================================
+// VITAL RECORDS
+// ============================================
+
+model VitalRecord {
+  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+  patientId           String    @db.ObjectId
+  systolicBP          Float?
+  diastolicBP         Float?
+  heartRate           Float?
+  temperature         Float?
+  oxygenSaturation    Float?
+  weight              Float?
+  notes               String?
+  recordedAt          DateTime  @default(now())
+  blockchainTxHash    String?
+  createdAt           DateTime  @default(now())
+
+  // Relations
+  patient             Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  blockchainProof     BlockchainProof?
+
+  @@index([patientId])
+  @@index([recordedAt])
+  @@map("vital_records")
+}
+
+// ============================================
+// SYMPTOMS
+// ============================================
+
+model Symptom {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  patientId    String         @db.ObjectId
+  symptomType  String
+  severity     Severity
+  description  String
+  occurredAt   DateTime       @default(now())
+  createdAt    DateTime       @default(now())
+
+  // Relations
+  patient      Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId])
+  @@index([occurredAt])
+  @@map("symptoms")
+}
+
+enum Severity {
+  MILD
+  MODERATE
+  SEVERE
+}
+
+// ============================================
+// ALERTS
+// ============================================
+
+model Alert {
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  patientId       String       @db.ObjectId
+  triggeredById   String?      @db.ObjectId
+  alertType       AlertType
+  severity        AlertSeverity
+  message         String
+  data            Json?
+  status          AlertStatus  @default(OPEN)
+  acknowledgedById String?     @db.ObjectId
+  acknowledgedAt  DateTime?
+  resolvedById    String?      @db.ObjectId
+  resolvedAt      DateTime?
+  resolution      String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  // Relations
+  patient         Patient      @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  triggeredBy     User?        @relation("AlertCreatedBy", fields: [triggeredById], references: [id])
+  acknowledgedBy  User?        @relation("AlertAcknowledgedBy", fields: [acknowledgedById], references: [id])
+  resolvedBy      User?        @relation("AlertResolvedBy", fields: [resolvedById], references: [id])
+  auditLogs       AuditLog[]
+
+  @@index([patientId])
+  @@index([status])
+  @@index([severity])
+  @@index([createdAt])
+  @@map("alerts")
+}
+
+enum AlertType {
+  VITAL
+  SYMPTOM
+  MEDICATION
+  SYSTEM
+}
+
+enum AlertSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum AlertStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+  CLOSED
+}
+
+// ============================================
+// SERVICES
+// ============================================
+
+model Service {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  serviceName       String   @unique
+  description       String?
+  consultationFee   Float?
+  averageDuration   Int?     // in minutes
+  isActive          Boolean  @default(true)
+  specializations   String[]
+  patientIds        String[] @db.ObjectId
+  teamIds           String[] @db.ObjectId
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("services")
+}
+
+// ============================================
+// QUESTIONNAIRE TEMPLATES (Admin-created)
+// ============================================
+
+model QuestionnaireTemplate {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  title             String
+  description       String?
+  questions         QuestionItem[]
+  assignedServiceIds String[] @db.ObjectId
+  assignedPatientIds String[] @db.ObjectId
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("questionnaire_templates")
+}
+
+type QuestionItem {
+  text     String
+  type     String   // TEXT, NUMBER, BOOLEAN, CHOICE
+  required Boolean
+  options  String[] // for CHOICE type
+}
+
+// ============================================
+// QUESTIONNAIRES (Patient responses)
+// ============================================
+
+model Questionnaire {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  patientId         String   @db.ObjectId
+  questionnaireType String
+  responses         Json
+  overallScore      Float?
+  completedAt       DateTime @default(now())
+  createdAt         DateTime @default(now())
+
+  // Relations
+  patient           Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  @@index([patientId])
+  @@index([completedAt])
+  @@map("questionnaires")
+}
+
+// ============================================
+// AUDIT LOGS
+// ============================================
+
+model AuditLog {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId            String   @db.ObjectId
+  action            String
+  entityType        String
+  entityId          String?  @db.ObjectId
+  changes           Json?
+  ipAddress         String?
+  userAgent         String?
+  blockchainTxHash  String?
+  timestamp         DateTime @default(now())
+
+  // Relations
+  user              User     @relation(fields: [userId], references: [id])
+  alert             Alert?   @relation(fields: [entityId], references: [id])
+  blockchainProof   BlockchainProof?
+
+  @@index([userId])
+  @@index([entityType])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
+
+// ============================================
+// BLOCKCHAIN PROOF
+// ============================================
+
+model BlockchainProof {
+  id                String       @id @default(auto()) @map("_id") @db.ObjectId
+  dataHash          String
+  txHash            String       @unique
+  blockchainNetwork String       @default("aptos-testnet")
+  blockNumber       Int?
+  timestamp         DateTime     @default(now())
+  status            BlockchainStatus @default(PENDING)
+  
+  // Relations (one-to-one)
+  vitalRecordId     String?      @unique @db.ObjectId
+  vitalRecord       VitalRecord? @relation(fields: [vitalRecordId], references: [id])
+  
+  auditLogId        String?      @unique @db.ObjectId
+  auditLog          AuditLog?    @relation(fields: [auditLogId], references: [id])
+
+  @@index([timestamp])
+  @@map("blockchain_proofs")
+}
+
+enum BlockchainStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+}
+
+// ============================================
+// NOTIFICATIONS
+// ============================================
+
+model Notification {
+  id            String             @id @default(auto()) @map("_id") @db.ObjectId
+  recipientId   String             @db.ObjectId
+  type          NotificationType
+  title         String
+  message       String
+  data          Json?
+  isRead        Boolean            @default(false)
+  readAt        DateTime?
+  sentVia       NotificationChannel[]
+  createdAt     DateTime           @default(now())
+
+  @@index([recipientId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  ALERT
+  REMINDER
+  SYSTEM
+  MESSAGE
+}
+
+enum NotificationChannel {
+  IN_APP
+  EMAIL
+  SMS
+  PUSH
+}
+
+// ============================================
+// SESSIONS (for JWT refresh tokens)
+// ============================================
+
+model Session {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @db.ObjectId
+  refreshToken String   @unique
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+  ipAddress    String?
+  userAgent    String?
+
+  // Relations
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("sessions")
+}

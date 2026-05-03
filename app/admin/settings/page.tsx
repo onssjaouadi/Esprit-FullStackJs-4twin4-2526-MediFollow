@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Bell, Lock, Eye, Save, AlertCircle } from "lucide-react";
+import { Bell, Lock, Eye, Save, AlertCircle, Globe } from "lucide-react";
+import { useLanguage } from "@/app/SettingsContext";
 
 export default function SettingsPage() {
+  const { language, setLanguage } = useLanguage();
   const [saving, setSaving] = useState(false);
   const [settings, setSettings] = useState({
     notificationsEmail: true,
@@ -55,6 +57,31 @@ export default function SettingsPage() {
           Configurez les préférences du système et les paramètres
           d'administration
         </p>
+      </div>
+
+      {/* Language / Preferences */}
+      <div className="glass-panel rounded-xl border border-slate-200 dark:border-slate-700 p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <Globe className="text-blue-600 dark:text-blue-400" size={24} />
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+            Préférences Régionales
+          </h2>
+        </div>
+
+        <div className="p-4 rounded-lg border border-slate-200 dark:border-slate-700">
+          <label className="text-sm font-semibold text-slate-600 dark:text-slate-400 block mb-2">
+            Langue de l'interface
+          </label>
+          <select
+            value={language}
+            onChange={(e) => setLanguage(e.target.value as any)}
+            className="w-full px-4 py-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 outline-none"
+          >
+            <option value="fr">Français</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
       </div>
 
       {/* Notifications */}

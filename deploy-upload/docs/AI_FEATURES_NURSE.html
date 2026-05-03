@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFollow - Fonctionnalités AI pour Infirmières</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+          "Ubuntu", "Cantarell", sans-serif;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* Header */
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        color: #10b981;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .role-badge {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .header p {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .header-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .stat {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #10b981;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+      }
+
+      /* Services Grid */
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .service-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border-left: 4px solid #10b981;
+      }
+
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .service-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+      }
+
+      .service-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .service-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 15px;
+      }
+
+      .service-features {
+        list-style: none;
+        margin: 15px 0;
+        padding: 0;
+      }
+
+      .service-features li {
+        padding: 8px 0;
+        color: #555;
+        font-size: 13px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .service-features li:before {
+        content: "✓ ";
+        color: #10b981;
+        font-weight: bold;
+        margin-right: 8px;
+      }
+
+      .service-features li:last-child {
+        border-bottom: none;
+      }
+
+      .provider-tag {
+        display: inline-block;
+        background: #ecfdf5;
+        color: #10b981;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+
+      /* Status Indicator */
+      .status {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+
+      .status.active {
+        background: #10b981;
+        box-shadow: 0 0 8px #10b981;
+      }
+
+      .status.beta {
+        background: #f59e0b;
+      }
+
+      .status.text {
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 5px;
+      }
+
+      /* CTA Button */
+      .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+
+      .cta-button:hover {
+        transform: translateX(2px);
+        box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
+      }
+
+      /* Workflow Section */
+      .workflow {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .workflow h2 {
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 22px;
+        border-bottom: 3px solid #10b981;
+        padding-bottom: 10px;
+      }
+
+      .workflow-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+
+      .workflow-item {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 3px solid #10b981;
+      }
+
+      .workflow-item h4 {
+        color: #10b981;
+        margin-bottom: 8px;
+      }
+
+      .workflow-item p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* Benefits */
+      .benefits {
+        background: linear-gradient(
+          135deg,
+          rgba(16, 185, 129, 0.1) 0%,
+          rgba(5, 150, 105, 0.1) 100%
+        );
+        border-radius: 12px;
+        padding: 30px;
+        border: 2px dashed #10b981;
+        margin-bottom: 40px;
+      }
+
+      .benefits h2 {
+        color: #10b981;
+        margin-bottom: 20px;
+      }
+
+      .benefits ul {
+        margin-left: 20px;
+        color: #555;
+      }
+
+      .benefits li {
+        margin-bottom: 12px;
+        line-height: 1.6;
+      }
+
+      /* Footer */
+      .footer {
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-top: 40px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header h1 {
+          font-size: 22px;
+        }
+
+        .services-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .container {
+          padding: 15px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-content">
+          <div>
+            <h1><span>👩‍⚕️</span> Espace Infirmière - Fonctionnalités AI</h1>
+            <span class="role-badge">MODE INFIRMIÈRE</span>
+          </div>
+        </div>
+        <p>
+          Accédez à des outils intelligents conçus pour simplifier votre travail
+          clinique. Générez des rapports détaillés, analysez des tendances de
+          santé et prenez des décisions mieux informées avec le soutien de l'IA.
+        </p>
+        <div class="header-stats">
+          <div class="stat">
+            <div class="stat-number">6</div>
+            <div class="stat-label">Services AI</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">⚡</div>
+            <div class="stat-label">Gain de Temps</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">📈</div>
+            <div class="stat-label">Efficacité</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="services-grid">
+        <!-- 1. Vital Analysis -->
+        <div class="service-card">
+          <div class="service-icon">📊</div>
+          <h3>Analyse Intelligente des Vitaux</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Analysez les signes vitaux des patients avec contexte clinique et
+            détectez automatiquement les anomalies.
+          </p>
+          <ul class="service-features">
+            <li>Classification en 5 niveaux de sévérité</li>
+            <li>Détection d'anomalies intelligente</li>
+            <li>Corrélations entre paramètres</li>
+            <li>Alertes intelligentes et graduées</li>
+          </ul>
+          <span class="provider-tag">Azure OpenAI GPT-4o</span>
+          <button class="cta-button">Analyser les vitaux</button>
+        </div>
+
+        <!-- 2. Risk Assessment -->
+        <div class="service-card">
+          <div class="service-icon">⚠️</div>
+          <h3>Évaluation de Risque Assistée</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Obtenez une évaluation de risque complète basée sur l'historique et
+            les tendances du patient.
+          </p>
+          <ul class="service-features">
+            <li>Score de risque 0-100 nuancé</li>
+            <li>Analyse des tendances 7 jours</li>
+            <li>Prédiction d'évolution</li>
+            <li>Recommandations d'interventions</li>
+          </ul>
+          <span class="provider-tag">Groq Llama 3.3</span>
+          <button class="cta-button">Évaluer le risque</button>
+        </div>
+
+        <!-- 3. Report Generation -->
+        <div class="service-card">
+          <div class="service-icon">📄</div>
+          <h3>Génération de Rapports Automatisés</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Générez des rapports infirmiers professionnels complets en quelques
+            secondes avec analyse automatique.
+          </p>
+          <ul class="service-features">
+            <li>Rapports au format Markdown/PDF</li>
+            <li>Sections cliniques automatiques</li>
+            <li>Graphiques et visualisations</li>
+            <li>Recommandations structurées</li>
+          </ul>
+          <span class="provider-tag">Groq Llama 3.3</span>
+          <button class="cta-button">Générer un rapport</button>
+        </div>
+
+        <!-- 4. Quick Summary -->
+        <div class="service-card">
+          <div class="service-icon">📋</div>
+          <h3>Résumés Éclair Intelligents</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Obtenez un résumé de 2-3 phrases de l'état du patient pour le
+            tableau de bord et les notifications.
+          </p>
+          <ul class="service-features">
+            <li>Synthèse ultra-concise</li>
+            <li>Mise à jour en temps réel</li>
+            <li>Alertes prioritaires visibles</li>
+            <li>Prêt à copier-coller</li>
+          </ul>
+          <span class="provider-tag">Groq Llama 3.3</span>
+          <button class="cta-button">Générer un résumé</button>
+        </div>
+
+        <!-- 5. Trend Analysis -->
+        <div class="service-card">
+          <div class="service-icon">📈</div>
+          <h3>Analyse de Tendances Avancée</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Visualisez et comprenez les tendances de santé sur des périodes
+            longues avec prédictions.
+          </p>
+          <ul class="service-features">
+            <li>Graphiques de tendances 30 jours</li>
+            <li>Prédictions des 7 jours suivants</li>
+            <li>Points de basculement identifiés</li>
+            <li>Comparaisons de baselines</li>
+          </ul>
+          <span class="provider-tag">Groq Llama 3.3</span>
+          <button class="cta-button">Voir les tendances</button>
+        </div>
+
+        <!-- 6. Face Recognition -->
+        <div class="service-card">
+          <div class="service-icon">🔐</div>
+          <h3>Connexion Sécurisée Faciale</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Accédez rapidement aux dossiers patients de manière sécurisée avec
+            la reconnaissance faciale.
+          </p>
+          <ul class="service-features">
+            <li>Authentification biométrique rapide</li>
+            <li>Conformité HIPAA/RGPD</li>
+            <li>Logs d'audit automatiques</li>
+            <li>Fallback par badge/code</li>
+          </ul>
+          <span class="provider-tag">TensorFlow.js Face-API</span>
+          <button class="cta-button">Configurer la biométrie</button>
+        </div>
+      </div>
+
+      <!-- Workflow -->
+      <div class="workflow">
+        <h2>💼 Flux de Travail Type</h2>
+        <div class="workflow-grid">
+          <div class="workflow-item">
+            <h4>1️⃣ Consultation Patient</h4>
+            <p>
+              Commencez la journée en connectant les données du patient via
+              reconnaissance faciale.
+            </p>
+          </div>
+          <div class="workflow-item">
+            <h4>2️⃣ Analyse Intelligente</h4>
+            <p>
+              L'IA analyse automatiquement les signes vitaux et flags les
+              anomalies importantes.
+            </p>
+          </div>
+          <div class="workflow-item">
+            <h4>3️⃣ Évaluation de Risque</h4>
+            <p>
+              Obtenez une évaluation contextuelle du risque avec recommandations
+              d'intervention.
+            </p>
+          </div>
+          <div class="workflow-item">
+            <h4>4️⃣ Rapport Généré</h4>
+            <p>
+              Générez automatiquement un rapport clinique complet prêt à signer.
+            </p>
+          </div>
+          <div class="workflow-item">
+            <h4>5️⃣ Suivi Continu</h4>
+            <p>
+              Recevez des alertes intelligentes si la condition du patient
+              change.
+            </p>
+          </div>
+          <div class="workflow-item">
+            <h4>6️⃣ Rapport Global</h4>
+            <p>
+              Consultez un résumé des tendances clés avant de quitter votre
+              quart.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Benefits -->
+      <div class="benefits">
+        <h2>✨ Bénéfices Clés pour Votre Pratique</h2>
+        <ul>
+          <li>
+            <strong>Gain de temps clinique :</strong> 40% moins de temps passé
+            sur la documentation administrative
+          </li>
+          <li>
+            <strong>Meilleure qualité :</strong> Rapports détaillés et
+            standardisés chaque fois
+          </li>
+          <li>
+            <strong>Détection précoce :</strong> Identifiez les dégradations
+            avant qu'elles ne deviennent critiques
+          </li>
+          <li>
+            <strong>Confiance augmentée :</strong> Prenez des décisions basées
+            sur des données analysées par IA
+          </li>
+          <li>
+            <strong>Sécurité améliorée :</strong> Authentification biométrique
+            et logs complets d'audit
+          </li>
+          <li>
+            <strong>Compatibilité :</strong> Intégration complète avec votre
+            système existant
+          </li>
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>
+          MediFollow © 2026 | Émpower les infirmières avec l'IA | Rapports Plus
+          Rapides | Patients Mieux Soignés
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFollow - AI Features Implementation Guide</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+      }
+
+      header h1 {
+        font-size: 2.5em;
+        margin-bottom: 10px;
+      }
+
+      header p {
+        font-size: 1.1em;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      section {
+        margin-bottom: 50px;
+      }
+
+      section h2 {
+        color: #667eea;
+        font-size: 2em;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #667eea;
+      }
+
+      section h3 {
+        color: #764ba2;
+        font-size: 1.5em;
+        margin-top: 25px;
+        margin-bottom: 10px;
+      }
+
+      .service-card {
+        background: #f8f9fa;
+        border-left: 4px solid #667eea;
+        padding: 20px;
+        margin: 15px 0;
+        border-radius: 5px;
+      }
+
+      .service-card h4 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: white;
+      }
+
+      table th {
+        background: #667eea;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+      }
+
+      table td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      table tr:hover {
+        background: #f5f5f5;
+      }
+
+      .api-endpoint {
+        background: #f0f4ff;
+        border-left: 4px solid #667eea;
+        padding: 15px;
+        margin: 15px 0;
+        font-family: "Courier New", monospace;
+        border-radius: 3px;
+      }
+
+      .status {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 3px;
+        font-size: 0.9em;
+        font-weight: 600;
+      }
+
+      .status.active {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status.beta {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status.todo {
+        background: #f8d7da;
+        color: #721c24;
+      }
+
+      code {
+        background: #f4f4f4;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: "Courier New", monospace;
+      }
+
+      pre {
+        background: #2d2d2d;
+        color: #f8f8f2;
+        padding: 15px;
+        border-radius: 5px;
+        overflow-x: auto;
+        margin: 15px 0;
+      }
+
+      pre code {
+        background: none;
+        color: inherit;
+        padding: 0;
+      }
+
+      .feature-list {
+        list-style: none;
+        margin: 15px 0;
+      }
+
+      .feature-list li {
+        padding: 8px 0;
+        padding-left: 30px;
+        position: relative;
+      }
+
+      .feature-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #28a745;
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      .priority-high {
+        color: #dc3545;
+      }
+      .priority-medium {
+        color: #ffc107;
+      }
+      .priority-low {
+        color: #28a745;
+      }
+
+      footer {
+        background: #f8f9fa;
+        border-top: 1px solid #ddd;
+        padding: 20px;
+        text-align: center;
+        color: #666;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin: 20px 0;
+      }
+
+      .card {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .card h4 {
+        color: #667eea;
+        margin-bottom: 10px;
+      }
+
+      .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 3px;
+        font-size: 0.85em;
+        margin-right: 5px;
+        margin-bottom: 5px;
+      }
+
+      .badge-api {
+        background: #e3f2fd;
+        color: #1565c0;
+      }
+
+      .badge-ai {
+        background: #f3e5f5;
+        color: #7b1fa2;
+      }
+
+      .badge-active {
+        background: #e8f5e9;
+        color: #2e7d32;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>🤖 MediFollow AI Features</h1>
+        <p>Comprehensive Implementation Guide & API Documentation</p>
+        <p style="font-size: 0.9em; margin-top: 10px">
+          Version 1.0 | April 15, 2026
+        </p>
+      </header>
+
+      <div class="content">
+        <!-- Overview Section -->
+        <section>
+          <h2>📊 Vue d'ensemble des Services AI</h2>
+
+          <p>
+            MediFollow intègre
+            <strong>3 principaux fournisseurs AI</strong> pour couvrir
+            différents cas d'usage :
+          </p>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Fournisseur</th>
+                <th>Modèle</th>
+                <th>Cas d'Usage</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <strong>Groq</strong>
+                  <br /><span class="badge badge-api">Cloud API</span>
+                </td>
+                <td>Llama 3.1 70B<br />Llama 3.3 70B</td>
+                <td>Parse vitals, Risk analysis, Report generation</td>
+                <td><span class="status active">✅ Actif</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Azure OpenAI</strong>
+                  <br /><span class="badge badge-api">Enterprise API</span>
+                </td>
+                <td>GPT-4<br />GPT-4o</td>
+                <td>Vital classification, Admin intelligence, Chat</td>
+                <td><span class="status active">✅ Actif</span></td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Face-API</strong>
+                  <br /><span class="badge badge-ai">TensorFlow.js</span>
+                </td>
+                <td>Face Recognition</td>
+                <td>Facial login, Identity verification</td>
+                <td><span class="status active">✅ Actif</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Patient Module -->
+        <section>
+          <h2>👥 Module Patient</h2>
+
+          <h3>1. Chatbot Assistant</h3>
+          <div class="service-card">
+            <h4>Endpoint</h4>
+            <div class="api-endpoint">POST /api/patient/chatbot</div>
+
+            <h4 style="margin-top: 15px">Description</h4>
+            <p>
+              Assistant conversationnel 24/7 pour guider les patients à travers
+              l'application et leur fournir des conseils de santé.
+            </p>
+
+            <h4 style="margin-top: 15px">API Utilisée</h4>
+            <p>
+              <span class="badge badge-api">Azure OpenAI</span> - GPT-4 /
+              GPT-3.5-turbo
+            </p>
+
+            <h4 style="margin-top: 15px">Fonctionnalités</h4>
+            <ul class="feature-list">
+              <li>Historique de conversation persistant</li>
+              <li>Réponses contextuelles et intelligentes</li>
+              <li>Support multilingue (FR/EN)</li>
+              <li>Filtrage des réponses sensibles</li>
+              <li>Logging des interactions pour audit</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Vital Signs Module -->
+        <section>
+          <h2>❤️ Module Constantes Vitales</h2>
+
+          <h3>1. Vital Signs Parser</h3>
+          <div class="service-card">
+            <h4>Service: <code>lib/ai/vitalParser.ts</code></h4>
+            <p>
+              <strong>Description</strong>: Extraction intelligente des
+              constantes vitales à partir de transcriptions vocales
+            </p>
+
+            <h4 style="margin-top: 15px">API Utilisée</h4>
+            <p><span class="badge badge-api">Groq API</span> - Llama 3.3 70B</p>
+
+            <h4 style="margin-top: 15px">Paramètres Extraits</h4>
+            <ul class="feature-list">
+              <li>Tension artérielle (systolique/diastolique)</li>
+              <li>Fréquence cardiaque</li>
+              <li>Température</li>
+              <li>Saturation en oxygène (SpO2)</li>
+              <li>Poids</li>
+              <li>Notes additionnelles</li>
+            </ul>
+
+            <h4 style="margin-top: 15px">Validation Automatique</h4>
+            <p>Vérification des plages normales :</p>
+            <ul style="margin-left: 20px">
+              <li>Systolic BP: 50-250 mmHg</li>
+              <li>Diastolic BP: 30-150 mmHg</li>
+              <li>Heart Rate: 30-200 bpm</li>
+              <li>Temperature: 35-42°C</li>
+              <li>SpO2: 70-100%</li>
+            </ul>
+          </div>
+
+          <h3>2. AI Vital Status Classification</h3>
+          <div class="service-card">
+            <h4>
+              Service: <code>lib/services/vitals-ai-status.service.ts</code>
+            </h4>
+            <p>
+              <strong>Description</strong>: Classification contextuelle
+              intelligente au-delà des simples seuils
+            </p>
+
+            <h4 style="margin-top: 15px">API Utilisée</h4>
+            <p><span class="badge badge-api">Azure OpenAI</span> - GPT-4o</p>
+
+            <h4 style="margin-top: 15px">Résultats Fournis</h4>
+            <ul class="feature-list">
+              <li>Sévérité (EXCELLENT → CRITICAL)</li>
+              <li>Classification clinique</li>
+              <li>Insights détaillés</li>
+              <li>Recommandations d'action</li>
+              <li>Facteurs de risque identifiés</li>
+              <li>Corrélations entre vitals</li>
+            </ul>
+          </div>
+
+          <h3>3. Risk Analysis Engine</h3>
+          <div class="service-card">
+            <h4>Service: <code>lib/ai/riskAnalysis.ts</code></h4>
+            <p>
+              <strong>Description</strong>: Analyse du risque patient basée sur
+              historique et tendances
+            </p>
+
+            <h4 style="margin-top: 15px">API Utilisée</h4>
+            <p><span class="badge badge-api">Groq API</span> - Llama 3.3 70B</p>
+
+            <h4 style="margin-top: 15px">Score de Risque</h4>
+            <table>
+              <tr>
+                <td>0-30</td>
+                <td>🟢 Risque Faible</td>
+              </tr>
+              <tr>
+                <td>31-50</td>
+                <td>🟡 Risque Modéré</td>
+              </tr>
+              <tr>
+                <td>51-75</td>
+                <td>🟠 Risque Élevé</td>
+              </tr>
+              <tr>
+                <td>76-90</td>
+                <td>🔴 Risque Très Élevé</td>
+              </tr>
+              <tr>
+                <td>91-100</td>
+                <td>⚫ Risque Critique</td>
+              </tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- Nurse Module -->
+        <section>
+          <h2>👩‍⚕️ Module Infirmière</h2>
+
+          <h3>1. Automated Report Generation</h3>
+          <div class="service-card">
+            <h4>Service: <code>lib/ai/reportGeneration.ts</code></h4>
+            <p>
+              <strong>Description</strong>: Génération automatique de rapports
+              infirmiers complets et professionnels
+            </p>
+
+            <h4 style="margin-top: 15px">API Utilisée</h4>
+            <p><span class="badge badge-api">Groq API</span> - Llama 3.3 70B</p>
+
+            <h4 style="margin-top: 15px">Sections du Rapport</h4>
+            <ul class="feature-list">
+              <li>Résumé clinique</li>
+              <li>Analyse des constantes vitales</li>
+              <li>Évolution et tendances</li>
+              <li>Alertes et préoccupations</li>
+              <li>Plan de suivi</li>
+              <li>Recommandations d'action</li>
+            </ul>
+
+            <h4 style="margin-top: 15px">Sortie</h4>
+            <p>Rapport formaté en Markdown, prêt pour PDF ou impression</p>
+          </div>
+
+          <h3>2. Quick Summary Generation</h3>
+          <div class="service-card">
+            <h4>Description</h4>
+            <p>Résumé rapide 2-3 phrases de l'état patient pour dashboard</p>
+
+            <h4 style="margin-top: 15px">Cas d'Usage</h4>
+            <ul class="feature-list">
+              <li>Affichage instantané pour infirmiers</li>
+              <li>Notifications mobiles</li>
+              <li>Dashboards à vue rapide</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Admin Module -->
+        <section>
+          <h2>⚙️ Module Administrateur</h2>
+
+          <h3>Admin Copilot - Next Best Actions</h3>
+          <div class="service-card">
+            <h4>Service: <code>lib/ai/admin-intelligence.ts</code></h4>
+            <p>
+              <strong>Description</strong>: Assistant IA intelligent pour
+              recommander les actions prioritaires
+            </p>
+
+            <h4 style="margin-top: 15px">API Utilisée</h4>
+            <p>
+              <span class="badge badge-api">Azure OpenAI</span> - GPT-4 (JSON
+              mode)
+            </p>
+
+            <h4 style="margin-top: 15px">Fonctionnalités</h4>
+            <ul class="feature-list">
+              <li>Analyse intelligente des alertes</li>
+              <li>Recommandations avec score de confiance</li>
+              <li>Navigation contextualisée vers bons écrans</li>
+              <li>Patterns détection et learning</li>
+              <li>Suggestions d'escalade appropriée</li>
+            </ul>
+
+            <h4 style="margin-top: 15px">Score de Confiance</h4>
+            <p>Clamped entre 0.35 et 0.98 pour éviter les faux positifs</p>
+          </div>
+        </section>
+
+        <!-- Authentication Module -->
+        <section>
+          <h2>🔐 Module Authentification</h2>
+
+          <h3>Face Recognition Login</h3>
+          <div class="service-card">
+            <h4>Component: <code>components/FaceLoginModal.tsx</code></h4>
+            <p>
+              <strong>Description</strong>: Authentification sécurisée et rapide
+              par reconnaissance faciale
+            </p>
+
+            <h4 style="margin-top: 15px">Technologie</h4>
+            <p>
+              <span class="badge badge-ai">@vladmandic/face-api</span> +
+              <span class="badge badge-api">TensorFlow.js</span>
+            </p>
+
+            <h4 style="margin-top: 15px">Fonctionnalités</h4>
+            <ul class="feature-list">
+              <li>Détection faciale en temps réel</li>
+              <li>Mesures anti-spoofing</li>
+              <li>Quality validation</li>
+              <li>Fallback sur password</li>
+              <li>Support 2FA</li>
+            </ul>
+
+            <h4 style="margin-top: 15px">Modèles Utilisés</h4>
+            <ul style="margin-left: 20px">
+              <li>tinyFaceDetector - Détection rapide</li>
+              <li>faceLandmarkNet - Landmarks extraction</li>
+              <li>faceRecognitionNet - Face descriptor (128D vector)</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Configuration Section -->
+        <section>
+          <h2>⚙️ Configuration & Setup</h2>
+
+          <h3>Groq API</h3>
+          <pre><code>GROQ_API_KEY=gsk_xxxxxxxxxxxxxx</code></pre>
+          <p><strong>Modèles disponibles</strong>:</p>
+          <ul style="margin-left: 20px">
+            <li><code>llama-3.1-70b-versatile</code> - Généraliste rapide</li>
+            <li><code>llama-3.3-70b-versatile</code> - Meilleure qualité</li>
+            <li><code>mixtral-8x7b-32768</code> - MoE model</li>
+          </ul>
+
+          <h3>Azure OpenAI</h3>
+          <pre><code>AZURE_OPENAI_API_KEY=xxxxxxxxxxxxxx
+AZURE_OPENAI_ENDPOINT=https://xxx.openai.azure.com/
+AZURE_OPENAI_DEPLOYMENT=gpt-4
+AZURE_OPENAI_API_VERSION=2024-02-15-preview</code></pre>
+
+          <h3>Santé Connect</h3>
+          <pre><code>SANTE_CONNECT_CLIENT_ID=xxxxxxxxxxxxxx
+SANTE_CONNECT_CLIENT_SECRET=xxxxxxxxxxxxxx
+SANTE_CONNECT_REDIRECT_URI=https://yourdomain.com/api/wearables/santeconnect/callback</code></pre>
+        </section>
+
+        <!-- Roadmap Section -->
+        <section>
+          <h2>🗓️ Roadmap & Priorités</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Service</th>
+                <th>Module</th>
+                <th>Priorité</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Vital Parser</td>
+                <td>Patient/Infirmière</td>
+                <td><span class="priority-high">🔴 Haute</span></td>
+                <td><span class="status todo">⏳ TODO</span></td>
+              </tr>
+              <tr>
+                <td>Risk Analysis</td>
+                <td>Dashboard</td>
+                <td><span class="priority-high">🔴 Haute</span></td>
+                <td><span class="status todo">⏳ TODO</span></td>
+              </tr>
+              <tr>
+                <td>Report Generation</td>
+                <td>Infirmière</td>
+                <td><span class="priority-high">🔴 Haute</span></td>
+                <td><span class="status todo">⏳ TODO</span></td>
+              </tr>
+              <tr>
+                <td>Admin Copilot</td>
+                <td>Administrateur</td>
+                <td><span class="priority-medium">🟡 Moyenne</span></td>
+                <td><span class="status todo">⏳ TODO</span></td>
+              </tr>
+              <tr>
+                <td>Translation Service</td>
+                <td>Global</td>
+                <td><span class="priority-medium">🟡 Moyenne</span></td>
+                <td><span class="status todo">⏳ TODO</span></td>
+              </tr>
+              <tr>
+                <td>Predictive Analytics</td>
+                <td>Dashboard</td>
+                <td><span class="priority-low">🟢 Basse</span></td>
+                <td><span class="status todo">⏳ TODO</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <!-- Resources Section -->
+        <section>
+          <h2>📚 Ressources & Documentation</h2>
+
+          <div class="grid">
+            <div class="card">
+              <h4>🔗 Groq</h4>
+              <p>API rapide et gratuite pour Llama 3</p>
+              <p>
+                <a href="https://console.groq.com/docs" target="_blank"
+                  >Console Groq</a
+                >
+              </p>
+            </div>
+            <div class="card">
+              <h4>🔗 Azure OpenAI</h4>
+              <p>Modèles GPT en entreprise</p>
+              <p>
+                <a
+                  href="https://learn.microsoft.com/azure/cognitive-services/openai/"
+                  target="_blank"
+                  >Azure Docs</a
+                >
+              </p>
+            </div>
+            <div class="card">
+              <h4>🔗 Santé Connect</h4>
+              <p>Intégration OAuth santé France</p>
+              <p>
+                <a href="https://sante-connect.fr/dev" target="_blank"
+                  >Dev Portal</a
+                >
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <footer>
+        <p>&copy; 2026 MediFollow - AI Features Implementation Guide v1.0</p>
+        <p>Document créé le 15 Avril 2026 | Prochaine révision: 15 Mai 2026</p>
+      </footer>
+    </div>
+  </body>
+</html>

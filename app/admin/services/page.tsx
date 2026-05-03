@@ -222,7 +222,7 @@ export default function ServiceManagementPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold">Service Management</h1>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-600 dark:text-slate-400">
               Create services, assign patients and care teams.
             </p>
           </div>
@@ -303,7 +303,7 @@ export default function ServiceManagementPage() {
                 </p>
                 <div className="max-h-32 space-y-1 overflow-auto">
                   {team.length === 0 && (
-                    <p className="text-[11px] text-slate-500">
+                    <p className="text-[11px] text-slate-600">
                       No doctors/nurses found.
                     </p>
                   )}
@@ -314,7 +314,7 @@ export default function ServiceManagementPage() {
                     >
                       <span>{m.label}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-[10px] text-slate-500">
+                        <span className="text-[10px] text-slate-600">
                           {m.role}
                         </span>
                         <input
@@ -334,7 +334,7 @@ export default function ServiceManagementPage() {
                 </div>
               </div>
 
-              <p className="text-[11px] text-slate-400 dark:text-slate-500 italic">
+              <p className="text-[11px] text-slate-600 dark:text-slate-500 italic">
                 You can assign patients after creating the service.
               </p>
 
@@ -354,7 +354,7 @@ export default function ServiceManagementPage() {
             </h2>
             <div className="space-y-2">
               {services.length === 0 ? (
-                <p className="text-sm text-slate-500">No services yet.</p>
+                <p className="text-sm text-slate-600">No services yet.</p>
               ) : (
                 services.map((svc) => (
                   <div
@@ -373,7 +373,7 @@ export default function ServiceManagementPage() {
                       <p className="text-sm font-semibold text-slate-900 dark:text-white">
                         {svc.serviceName}
                       </p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-600">
                         {svc.description || "No description"} &middot;{" "}
                         {(svc.patientIds || []).length} patients &middot;{" "}
                         {(svc.teamIds || []).length} team
@@ -428,7 +428,7 @@ export default function ServiceManagementPage() {
                 </h3>
                 <div className="max-h-72 space-y-2 overflow-auto">
                   {patients.length === 0 && (
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-600">
                       No patients in database.
                     </p>
                   )}
@@ -451,7 +451,7 @@ export default function ServiceManagementPage() {
                       <span className="text-slate-800 dark:text-slate-200">
                         {p.label}
                       </span>
-                      <span className="ml-auto text-xs text-slate-400">
+                      <span className="ml-auto text-xs text-slate-600">
                         {p.email}
                       </span>
                     </label>
@@ -467,7 +467,7 @@ export default function ServiceManagementPage() {
                 </h3>
                 <div className="max-h-72 space-y-2 overflow-auto">
                   {team.length === 0 && (
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-600">
                       No doctors/nurses in database.
                     </p>
                   )}
@@ -488,7 +488,7 @@ export default function ServiceManagementPage() {
                           {m.label}
                         </span>
                       </div>
-                      <span className="text-xs text-slate-500">{m.role}</span>
+                      <span className="text-xs text-slate-600">{m.role}</span>
                     </label>
                   ))}
                 </div>

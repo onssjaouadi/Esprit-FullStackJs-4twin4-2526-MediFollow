@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
   PerspectiveCamera,
   Environment,
 } from "@react-three/drei";
 import * as THREE from "three";
+import SafeCanvas from "./SafeCanvas";
 
 // Composant du corps humain 3D
 function HumanBody() {
@@ -271,7 +272,7 @@ export default function HumanBody3D() {
       </div>
 
       {/* Canvas Three.js */}
-      <Canvas shadows>
+      <SafeCanvas shadows>
         <PerspectiveCamera makeDefault position={[0, 0, 5]} fov={50} />
         <OrbitControls
           enableZoom={true}
@@ -303,7 +304,7 @@ export default function HumanBody3D() {
           <planeGeometry args={[10, 10]} />
           <meshStandardMaterial color="#e0e0e0" opacity={0.3} transparent />
         </mesh>
-      </Canvas>
+      </SafeCanvas>
 
       {/* Indicateurs de santé */}
       <div className="absolute bottom-4 right-4 z-10 space-y-2">

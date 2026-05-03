@@ -510,7 +510,7 @@ export default function SettingsPage() {
                     <h3 className="text-sm font-medium text-red-900 mb-2">
                       Zone de danger
                     </h3>
-                    <p className="text-sm text-red-700 mb-4">
+                    <p className="text-sm text-red-800 mb-4">
                       Supprimer définitivement votre compte et toutes vos
                       données
                     </p>

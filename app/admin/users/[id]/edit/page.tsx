@@ -21,7 +21,27 @@ import {
   getUserById,
   updateUser,
   deleteUser,
+  getUserPlacementDetails,
+  updatePatientPlacement,
+  updateDoctorPlacement,
 } from "@/lib/actions/admin.actions";
+import {
+  getAllServices,
+  getAssignableCareTeam,
+} from "@/lib/actions/service.actions";
+
+interface ServiceOption {
+  id: string;
+  serviceName: string;
+  isActive?: boolean;
+}
+
+interface TeamMemberOption {
+  id: string;
+  label: string;
+  email: string;
+  role: string;
+}
 
 export default function EditUserPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -34,6 +54,13 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
   // Data states
   const [user, setUser] = useState<any>(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [services, setServices] = useState<ServiceOption[]>([]);
+  const [doctors, setDoctors] = useState<TeamMemberOption[]>([]);
+  const [placementForm, setPlacementForm] = useState({
+    serviceId: "",
+    doctorId: "",
+    specialty: "",
+  });
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -54,17 +81,40 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
         return;
       }
 
-      const userData = await getUserById(params.id);
+      const [userData, servicesRes, teamRes, placementRes] = await Promise.all([
+        getUserById(params.id),
+        getAllServices(),
+        getAssignableCareTeam(),
+        getUserPlacementDetails(params.id),
+      ]);
       if (userData) {
         setUser(userData);
         setFormData({
           firstName: userData.firstName || "",
           lastName: userData.lastName || "",
           email: userData.email || "",
-          role: userData.role,
+          role: userData.role as typeof formData.role,
           isActive: userData.isActive,
           phoneNumber: userData.phoneNumber || "",
         });
+
+        if (servicesRes.success) {
+          setServices(servicesRes.services || []);
+        }
+        if (teamRes.success) {
+          setDoctors(
+            (teamRes.team || []).filter(
+              (member: any) => member.role === "DOCTOR"
+            ) as TeamMemberOption[]
+          );
+        }
+        if (placementRes.success && placementRes.data) {
+          setPlacementForm({
+            serviceId: placementRes.data.service?.id || "",
+            doctorId: placementRes.data.doctor?.id || "",
+            specialty: placementRes.data.doctorProfile?.specialty || "",
+          });
+        }
       }
     } catch (error) {
       console.error("Loading error:", error);
@@ -84,6 +134,41 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
     try {
       const result = await updateUser(params.id, formData);
       if (result?.success) {
+        if (formData.role === "PATIENT") {
+          if (!placementForm.serviceId || !placementForm.doctorId) {
+            alert("Please select a service and doctor for this patient.");
+            setSaving(false);
+            return;
+          }
+          const placementResult = await updatePatientPlacement(
+            params.id,
+            placementForm.serviceId,
+            placementForm.doctorId
+          );
+          if (!placementResult.success) {
+            alert(placementResult.error || "Failed to update patient assignment.");
+            setSaving(false);
+            return;
+          }
+        }
+
+        if (formData.role === "DOCTOR") {
+          if (!placementForm.serviceId || !placementForm.specialty.trim()) {
+            alert("Please select a service and specialty for this doctor.");
+            setSaving(false);
+            return;
+          }
+          const placementResult = await updateDoctorPlacement(
+            params.id,
+            placementForm.serviceId,
+            placementForm.specialty
+          );
+          if (!placementResult.success) {
+            alert(placementResult.error || "Failed to update doctor placement.");
+            setSaving(false);
+            return;
+          }
+        }
         router.push(`/admin/users/${params.id}`);
         router.refresh();
       }
@@ -302,6 +387,117 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                 ))}
               </div>
             </section>
+
+            {/* Section: Assigned Doctor (Patient only) */}
+            {formData.role === "PATIENT" && (
+              <section className="rounded-[32px] border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 p-8 space-y-6">
+                <h3 className="mb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500 flex items-center gap-2">
+                  <UserCog size={14} className="text-teal-500" /> Care Assignment
+                </h3>
+                <div className="space-y-2">
+                  <label className="ml-1 text-[10px] font-black uppercase text-slate-400 dark:text-zinc-500">
+                    Service
+                  </label>
+                  <select
+                    required
+                    className="w-full rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 px-5 py-4 font-bold outline-none focus:border-blue-500 transition-all appearance-none"
+                    value={placementForm.serviceId}
+                    onChange={(e) =>
+                      setPlacementForm({
+                        ...placementForm,
+                        serviceId: e.target.value,
+                        doctorId: "",
+                      })
+                    }
+                  >
+                    <option value="">Select service</option>
+                    {services
+                      .filter((service) => service.isActive !== false)
+                      .map((service) => (
+                        <option key={service.id} value={service.id}>
+                          {service.serviceName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="ml-1 text-[10px] font-black uppercase text-slate-400 dark:text-zinc-500">
+                    Assigned Doctor
+                  </label>
+                  <select
+                    required
+                    className="w-full rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 px-5 py-4 font-bold outline-none focus:border-blue-500 transition-all appearance-none"
+                    value={placementForm.doctorId}
+                    onChange={(e) =>
+                      setPlacementForm({
+                        ...placementForm,
+                        doctorId: e.target.value,
+                      })
+                    }
+                    disabled={!placementForm.serviceId}
+                  >
+                    <option value="">Select doctor</option>
+                    {doctors.map((doctor) => (
+                      <option key={doctor.id} value={doctor.id}>
+                        {doctor.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </section>
+            )}
+
+            {/* Section: Doctor Placement */}
+            {formData.role === "DOCTOR" && (
+              <section className="rounded-[32px] border border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/30 p-8 space-y-6">
+                <h3 className="mb-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 dark:text-zinc-500 flex items-center gap-2">
+                  <UserCog size={14} className="text-teal-500" /> Doctor
+                  Placement
+                </h3>
+                <div className="space-y-2">
+                  <label className="ml-1 text-[10px] font-black uppercase text-slate-400 dark:text-zinc-500">
+                    Service
+                  </label>
+                  <select
+                    required
+                    className="w-full rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 px-5 py-4 font-bold outline-none focus:border-blue-500 transition-all appearance-none"
+                    value={placementForm.serviceId}
+                    onChange={(e) =>
+                      setPlacementForm({
+                        ...placementForm,
+                        serviceId: e.target.value,
+                      })
+                    }
+                  >
+                    <option value="">Select service</option>
+                    {services
+                      .filter((service) => service.isActive !== false)
+                      .map((service) => (
+                        <option key={service.id} value={service.id}>
+                          {service.serviceName}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="ml-1 text-[10px] font-black uppercase text-slate-400 dark:text-zinc-500">
+                    Specialty
+                  </label>
+                  <input
+                    required
+                    className="w-full rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 px-5 py-4 font-bold outline-none focus:border-blue-500 transition-all"
+                    value={placementForm.specialty}
+                    onChange={(e) =>
+                      setPlacementForm({
+                        ...placementForm,
+                        specialty: e.target.value,
+                      })
+                    }
+                    placeholder="e.g. Cardiology"
+                  />
+                </div>
+              </section>
+            )}
 
             {/* Action buttons */}
             <div className="flex items-center justify-end gap-6 pt-4">

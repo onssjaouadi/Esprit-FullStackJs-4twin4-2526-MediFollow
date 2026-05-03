@@ -178,12 +178,14 @@ export default function AdminCommandPalette() {
           <div className="px-3 pb-3">
             <div className="rounded-md border border-slate-200 bg-slate-50 p-2.5 text-xs dark:border-slate-800 dark:bg-slate-900/70">
               {copilotLoading && (
-                <p className="text-slate-600 dark:text-slate-300">
+                // a11y: 4.1.3 Status Messages – role=status for non-urgent loading update
+                <p role="status" aria-live="polite" className="text-slate-600 dark:text-slate-300">
                   Analyzing your command...
                 </p>
               )}
               {copilotError && (
-                <p className="text-red-600 dark:text-red-400">{copilotError}</p>
+                // a11y: 4.1.3 Status Messages – role=alert for immediate error announcement
+                <p role="alert" className="text-red-600 dark:text-red-400">{copilotError}</p>
               )}
               {copilotResult && (
                 <>

@@ -1,0 +1,16 @@
+---
+profiles:
+  default:
+    network: Testnet
+    private_key: "0x2e3c4b57f9f52cb7d616c1779e1ac525ea9dbeba79b8b2f50b9b8794b03cf2c3"
+    public_key: "0x433851a0519e791caa8b28a0033468c7dd0c97b486998ce53a349dbb1bc22580"
+    account: d8c98320e8fb3694e752f74d8a71ffa72b1d50394d08c0e932592c5d97416b4e
+    rest_url: "https://fullnode.testnet.aptoslabs.com"
+    faucet_url: "https://faucet.testnet.aptoslabs.com"
+  medifollow:
+    network: Testnet
+    private_key: "0xd8c98320e8fb3694e752f74d8a71ffa72b1d50394d08c0e932592c5d97416b4e"
+    public_key: "0x9285360cc4612d88a397850837800b9588f04c8b09f386c8cf73f48780235d78"
+    account: 43f2e7420983c87eb131d936c18237d68f19952aeac6fd49778c7507062347f1
+    rest_url: "https://fullnode.testnet.aptoslabs.com"
+    faucet_url: "https://faucet.testnet.aptoslabs.com"

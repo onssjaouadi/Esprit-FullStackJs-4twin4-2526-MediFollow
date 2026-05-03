@@ -967,8 +967,8 @@ export default function HistoryPage() {
                 onClick={() => setFilterStatus("NORMAL")}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap ${
                   filterStatus === "NORMAL"
-                    ? "border-green-600 bg-green-50 text-green-700"
-                    : "border-green-200 bg-white text-green-600 hover:bg-green-50"
+                    ? "border-green-600 bg-green-50 text-green-800"
+                    : "border-green-300 bg-white text-green-700 hover:bg-green-50"
                 }`}
               >
                 🟢 Normal
@@ -977,8 +977,8 @@ export default function HistoryPage() {
                 onClick={() => setFilterStatus("A_VERIFIER")}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap ${
                   filterStatus === "A_VERIFIER"
-                    ? "border-orange-600 bg-orange-50 text-orange-700"
-                    : "border-orange-200 bg-white text-orange-600 hover:bg-orange-50"
+                    ? "border-orange-600 bg-orange-50 text-orange-800"
+                    : "border-orange-300 bg-white text-orange-700 hover:bg-orange-50"
                 }`}
               >
                 🟡 À vérifier
@@ -987,7 +987,7 @@ export default function HistoryPage() {
                 onClick={() => setFilterStatus("CRITIQUE")}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap ${
                   filterStatus === "CRITIQUE"
-                    ? "border-red-600 bg-red-50 text-red-700"
+                    ? "border-red-600 bg-red-50 text-red-800"
                     : "border-red-200 bg-white text-red-600 hover:bg-red-50"
                 }`}
               >
@@ -1028,8 +1028,8 @@ export default function HistoryPage() {
                 onClick={() => setFilterReview("reviewed")}
                 className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors whitespace-nowrap ${
                   filterReview === "reviewed"
-                    ? "border-purple-600 bg-purple-50 text-purple-700"
-                    : "border-purple-200 bg-white text-purple-600 hover:bg-purple-50"
+                    ? "border-purple-600 bg-purple-50 text-purple-800"
+                    : "border-purple-300 bg-white text-purple-700 hover:bg-purple-50"
                 }`}
               >
                 ✅ Reviewé (Normal)
@@ -1087,10 +1087,10 @@ export default function HistoryPage() {
                                 <span
                                   className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium ${
                                     item.vitalStatus === "CRITIQUE"
-                                      ? "bg-red-50 text-red-700 border-red-200"
+                                      ? "bg-red-50 text-red-800 border-red-200"
                                       : item.vitalStatus === "A_VERIFIER"
-                                        ? "bg-orange-50 text-orange-700 border-orange-200"
-                                        : "bg-green-50 text-green-700 border-green-200"
+                                        ? "bg-orange-50 text-orange-800 border-orange-200"
+                                        : "bg-green-50 text-green-800 border-green-200"
                                   }`}
                                 >
                                   {item.vitalStatus === "CRITIQUE"

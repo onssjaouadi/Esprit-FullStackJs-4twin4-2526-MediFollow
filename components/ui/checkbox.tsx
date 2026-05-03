@@ -21,7 +21,8 @@ const Checkbox = React.forwardRef<
     <CheckboxPrimitive.Indicator
       className={cn("flex items-center justify-center text-current")}
     >
-      <Check className="size-4" />
+      {/* a11y: 1.1.1 Non-text Content – check mark is decorative; aria-checked on root conveys state */}
+      <Check className="size-4" aria-hidden="true" />
     </CheckboxPrimitive.Indicator>
   </CheckboxPrimitive.Root>
 ));

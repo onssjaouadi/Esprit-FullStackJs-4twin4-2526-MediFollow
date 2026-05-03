@@ -48,19 +48,28 @@ export default function VitalsTableActions({
           onClick={() => setIsModalOpen(true)}
           className="p-2 hover:bg-blue-50 rounded-lg transition-colors group"
           title="Modifier"
+          // a11y: 4.1.2 Name, Role, Value – aria-label for icon-only button
+          aria-label="Modifier les signes vitaux"
         >
-          <Pen className="w-4 h-4 text-gray-600 group-hover:text-blue-600" />
+          {/* a11y: 1.1.1 Non-text Content – edit icon is decorative */}
+          <Pen className="w-4 h-4 text-gray-600 group-hover:text-blue-600" aria-hidden="true" />
         </button>
         <button
           onClick={handleDelete}
           disabled={deleting}
           className="p-2 hover:bg-red-50 rounded-lg transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
           title="Supprimer"
+          // a11y: 4.1.2 Name, Role, Value – aria-label for icon-only button
+          aria-label="Supprimer les signes vitaux"
+          // a11y: 4.1.2 Name, Role, Value – expose disabled state to AT
+          aria-disabled={deleting}
         >
           {deleting ? (
-            <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
+            // a11y: 4.1.3 Status Messages – role=status announces delete progress
+            <div role="status" aria-label="Suppression en cours" className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin" />
           ) : (
-            <Trash2 className="w-4 h-4 text-gray-600 group-hover:text-red-600" />
+            /* a11y: 1.1.1 Non-text Content – delete icon is decorative */
+            <Trash2 className="w-4 h-4 text-gray-600 group-hover:text-red-600" aria-hidden="true" />
           )}
         </button>
       </div>

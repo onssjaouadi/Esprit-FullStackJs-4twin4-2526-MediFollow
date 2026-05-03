@@ -35,6 +35,8 @@ interface User {
   status: "ACTIVE" | "INACTIVE";
   createdAt: string | Date;
   phoneNumber?: string | null;
+  doctorProfile?: { specialty?: string | null } | null;
+  nurseProfile?: { department?: string | null } | null;
 }
 
 interface ServiceOption {
@@ -391,6 +393,7 @@ export default function AdminUsersPage() {
                 <tr className="bg-slate-100 dark:bg-slate-800/50 border-b border-slate-200 dark:border-cyan-300/10">
                   <th className="px-6 py-4 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Identity</th>
                   <th className="px-6 py-4 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Role & Status</th>
+                  <th className="px-6 py-4 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Specialty/Service</th>
                   <th className="px-6 py-4 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Contact</th>
                   <th className="px-6 py-4 text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest text-right">Actions</th>
                 </tr>
@@ -418,6 +421,31 @@ export default function AdminUsersPage() {
                             {user.isActive ? 'Active' : 'Disabled'}
                           </span>
                         </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-xs text-slate-600 dark:text-slate-400">
+                        {user.role === 'DOCTOR' && user.doctorProfile?.specialty && (
+                          <div className="flex items-center gap-1.5">
+                            <UserCog size={12} className="text-blue-500" />
+                            <span className="font-medium">{user.doctorProfile.specialty}</span>
+                          </div>
+                        )}
+                        {user.role === 'NURSE' && user.nurseProfile?.department && (
+                          <div className="flex items-center gap-1.5">
+                            <UserCog size={12} className="text-pink-500" />
+                            <span className="font-medium">{user.nurseProfile.department}</span>
+                          </div>
+                        )}
+                        {user.role === 'PATIENT' && (
+                          <span className="text-slate-400 dark:text-slate-500 italic">Patient</span>
+                        )}
+                        {user.role === 'ADMIN' && (
+                          <span className="text-slate-400 dark:text-slate-500 italic">Administrator</span>
+                        )}
+                        {user.role === 'COORDINATOR' && (
+                          <span className="text-slate-400 dark:text-slate-500 italic">Coordinator</span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -451,7 +479,7 @@ export default function AdminUsersPage() {
                   </tr>
                 )) : (
                   <tr>
-                    <td colSpan={4} className="px-6 py-20 text-center">
+                    <td colSpan={5} className="px-6 py-20 text-center">
                         <Users className="mx-auto text-slate-700 mb-4" size={40} />
                         <p className="text-sm font-bold text-slate-500 italic">No users found.</p>
                     </td>

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: medifollow
+  labels:
+    app.kubernetes.io/name: medifollow
+    app.kubernetes.io/managed-by: kubectl

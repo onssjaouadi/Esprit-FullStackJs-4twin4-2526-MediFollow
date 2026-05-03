@@ -21,7 +21,11 @@ import {
 } from "lucide-react";
 
 import { getCurrentUser } from "@/lib/actions/auth.actions";
-import { getUserById, deleteUser } from "@/lib/actions/admin.actions";
+import {
+  getUserById,
+  deleteUser,
+  getUserPlacementDetails,
+} from "@/lib/actions/admin.actions";
 
 interface User {
   id: string;
@@ -37,6 +41,12 @@ interface User {
   updatedAt?: Date | string;
 }
 
+interface PlacementDetails {
+  service?: { id: string; serviceName: string } | null;
+  doctor?: { id: string; label: string; email: string } | null;
+  doctorProfile?: { specialty?: string | null } | null;
+}
+
 export default function UserDetailsPage({
   params,
 }: {
@@ -47,6 +57,7 @@ export default function UserDetailsPage({
   const [deleting, setDeleting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [placement, setPlacement] = useState<PlacementDetails | null>(null);
 
   const checkAuthAndLoadUser = useCallback(async () => {
     try {
@@ -56,15 +67,22 @@ export default function UserDetailsPage({
         return;
       }
 
-      const userData = await getUserById(params.id);
+      const [userData, placementRes] = await Promise.all([
+        getUserById(params.id),
+        getUserPlacementDetails(params.id),
+      ]);
 
       if (userData) {
         setUser({
           ...userData,
+          role: userData.role as User["role"],
           name:
             `${userData.firstName || ""} ${userData.lastName || ""}`.trim() ||
             userData.email,
         });
+      }
+      if (placementRes.success && placementRes.data) {
+        setPlacement(placementRes.data);
       }
     } catch (error) {
       console.error("Error loading user:", error);
@@ -237,6 +255,43 @@ export default function UserDetailsPage({
                 />
               </div>
             </div>
+
+            {/* Activity Card */}
+            {(user.role === "PATIENT" || user.role === "DOCTOR") && (
+              <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-sm">
+                <div className="px-8 py-6 border-b border-slate-50 dark:border-slate-800 flex items-center justify-between">
+                  <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">
+                    {user.role === "PATIENT"
+                      ? "Care Assignment"
+                      : "Doctor Placement"}
+                  </h3>
+                  <UserCog size={16} className="text-slate-300" />
+                </div>
+                <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <InfoItem
+                    icon={Activity}
+                    label="Service"
+                    value={placement?.service?.serviceName || "Unassigned"}
+                  />
+                  {user.role === "PATIENT" ? (
+                    <InfoItem
+                      icon={UserCog}
+                      label="Assigned Doctor"
+                      value={placement?.doctor?.label || "Unassigned"}
+                    />
+                  ) : (
+                    <InfoItem
+                      icon={UserCog}
+                      label="Specialty"
+                      value={
+                        placement?.doctorProfile?.specialty ||
+                        "No specialty configured"
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Activity Card */}
             <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-sm">

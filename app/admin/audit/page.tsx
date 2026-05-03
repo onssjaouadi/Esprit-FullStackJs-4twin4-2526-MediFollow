@@ -78,14 +78,14 @@ export default function AdminAuditPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-black tracking-tight">System Audit Log</h1>
-          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Platform Integrity Monitor</p>
+          <p className="text-[10px] font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Platform Integrity Monitor</p>
         </div>
         {isRefreshing && <Loader2 size={16} className="animate-spin text-indigo-500" />}
       </div>
         {/* Search & Stats */}
         <div className="mb-8 flex flex-col md:flex-row gap-4 items-end">
           <div className="relative flex-1 w-full">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" size={18} aria-hidden="true" />
             <input
               type="text"
               placeholder="Filter by action, user, or entity type..."
@@ -95,7 +95,7 @@ export default function AdminAuditPage() {
             />
           </div>
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 px-6 py-3 rounded-2xl shadow-sm">
-            <p className="text-[10px] font-black text-slate-400 uppercase">Live Records</p>
+            <p className="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase">Live Records</p>
             <p className="text-xl font-black text-indigo-600">{logs.length}</p>
           </div>
         </div>
@@ -104,7 +104,7 @@ export default function AdminAuditPage() {
         <div className="space-y-8">
           {groupedLogs.map((group) => (
             <section key={group.date}>
-              <div className="mb-4 inline-flex items-center rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+              <div className="mb-4 inline-flex items-center rounded-full border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-400">
                 {group.date}
               </div>
               <div className="relative pl-8">
@@ -122,12 +122,12 @@ export default function AdminAuditPage() {
 
                       <div className="flex flex-col md:flex-row md:items-start gap-6">
                         <div className="flex items-center gap-4 min-w-[200px]">
-                          <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 dark:text-slate-400 font-black">
+                          <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 font-black">
                             {log.user?.firstName?.charAt(0)}{log.user?.lastName?.charAt(0)}
                           </div>
                           <div>
                             <p className="text-sm font-bold dark:text-white">{log.user?.firstName} {log.user?.lastName}</p>
-                            <p className="text-[11px] text-slate-400 truncate max-w-[150px]">{log.user?.email}</p>
+                            <p className="text-[11px] text-slate-600 dark:text-slate-400 truncate max-w-[150px]">{log.user?.email}</p>
                           </div>
                         </div>
 
@@ -146,10 +146,10 @@ export default function AdminAuditPage() {
                           </p>
 
                           <div className="flex flex-wrap gap-3">
-                            <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                            <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-400">
                               <Globe size={12} /> {log.ipAddress || "Internal"}
                             </div>
-                            <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-500 dark:text-slate-400 max-w-[200px] truncate">
+                            <div className="flex items-center gap-1.5 px-2 py-1 bg-slate-50 dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-400 max-w-[200px] truncate">
                               <Cpu size={12} /> {log.userAgent || "Unknown Client"}
                             </div>
                             <div className="flex items-center gap-1.5 px-2 py-1 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg text-[10px] font-bold text-indigo-600 dark:text-indigo-400 ml-auto">
@@ -169,7 +169,7 @@ export default function AdminAuditPage() {
             <div className="text-center py-32 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800">
               <FileText size={48} className="mx-auto text-slate-200 dark:text-slate-800 mb-4" />
               <h3 className="text-lg font-bold dark:text-white">Clean Slate</h3>
-              <p className="text-sm text-slate-400">No audit logs found matching your filters.</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400">No audit logs found matching your filters.</p>
             </div>
           )}
         </div>

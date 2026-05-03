@@ -394,11 +394,12 @@ export default function RegisterPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600"
+                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   >
                     {showPassword ? (
-                      <EyeOff className="size-5" />
+                      <EyeOff className="size-5" aria-hidden="true" />
                     ) : (
-                      <Eye className="size-5" />
+                      <Eye className="size-5" aria-hidden="true" />
                     )}
                   </button>
                 </div>
@@ -433,11 +434,12 @@ export default function RegisterPage() {
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600"
+                    aria-label={showConfirmPassword ? "Masquer la confirmation du mot de passe" : "Afficher la confirmation du mot de passe"}
                   >
                     {showConfirmPassword ? (
-                      <EyeOff className="size-5" />
+                      <EyeOff className="size-5" aria-hidden="true" />
                     ) : (
-                      <Eye className="size-5" />
+                      <Eye className="size-5" aria-hidden="true" />
                     )}
                   </button>
                 </div>

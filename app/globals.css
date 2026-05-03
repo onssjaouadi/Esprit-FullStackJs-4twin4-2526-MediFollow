@@ -33,6 +33,19 @@
 }
 
 @layer utilities {
+  /* a11y: 2.4.7 Focus Visible – visually-hidden helper for screen-reader-only text */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
   /* ===== UTILITIES */
   .sidebar {
     @apply remove-scrollbar w-full max-w-72 flex-col overflow-auto bg-gray-900 px-7 py-10;
@@ -238,6 +251,16 @@
 
   .shad-dialog button {
     @apply focus:ring-0 focus:ring-offset-0 focus-visible:border-none focus-visible:outline-none focus-visible:ring-transparent focus-visible:ring-offset-0 !important;
+  }
+
+  /* a11y: 2.4.7 Focus Visible – restore visible focus ring for all interactive elements
+     when browser supports :focus-visible, overriding outline:none from .shad-* classes */
+  .shad-input:focus-visible,
+  .shad-textArea:focus-visible,
+  .shad-select-trigger:focus-visible,
+  .input-phone:focus-visible,
+  .date-picker:focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-green-500 !important;
   }
 
   .shad-error {

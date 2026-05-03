@@ -1,0 +1,447 @@
+{
+  "platform": "MediFollow",
+  "title": "AI Features Implementation Guide",
+  "version": "1.0",
+  "date": "2026-04-15",
+  "nextUpdate": "2026-05-15",
+
+  "providers": [
+    {
+      "name": "Groq",
+      "type": "Cloud API",
+      "status": "active",
+      "url": "https://console.groq.com",
+      "models": [
+        {
+          "name": "llama-3.1-70b-versatile",
+          "type": "General Purpose",
+          "latency": "Low",
+          "capabilities": "Fast, versatile"
+        },
+        {
+          "name": "llama-3.3-70b-versatile",
+          "type": "General Purpose",
+          "latency": "Low",
+          "capabilities": "Better instruction following"
+        },
+        {
+          "name": "mixtral-8x7b-32768",
+          "type": "MoE",
+          "latency": "Low",
+          "capabilities": "Efficient multi-expert"
+        }
+      ],
+      "pricing": "Free with rate limit",
+      "envVar": "GROQ_API_KEY"
+    },
+    {
+      "name": "Azure OpenAI",
+      "type": "Enterprise API",
+      "status": "active",
+      "url": "https://azure.microsoft.com/openai",
+      "models": [
+        {
+          "name": "gpt-4",
+          "type": "Most Capable",
+          "latency": "High",
+          "capabilities": "Best reasoning and understanding"
+        },
+        {
+          "name": "gpt-4o",
+          "type": "Multimodal",
+          "latency": "Medium",
+          "capabilities": "Vision + text"
+        },
+        {
+          "name": "gpt-3.5-turbo",
+          "type": "Fast",
+          "latency": "Low",
+          "capabilities": "Cost-effective"
+        }
+      ],
+      "pricing": "Pay-as-you-go",
+      "envVars": [
+        "AZURE_OPENAI_API_KEY",
+        "AZURE_OPENAI_ENDPOINT",
+        "AZURE_OPENAI_DEPLOYMENT",
+        "AZURE_OPENAI_API_VERSION"
+      ]
+    },
+    {
+      "name": "Face-API",
+      "type": "Client-side ML",
+      "status": "active",
+      "url": "https://github.com/vladmandic/face-api",
+      "models": [
+        {
+          "name": "tinyFaceDetector",
+          "type": "Detection",
+          "latency": "Very Low",
+          "capabilities": "Fast face detection"
+        },
+        {
+          "name": "faceLandmarkNet",
+          "type": "Landmarks",
+          "latency": "Very Low",
+          "capabilities": "68-point facial landmarks"
+        },
+        {
+          "name": "faceRecognitionNet",
+          "type": "Recognition",
+          "latency": "Very Low",
+          "capabilities": "128D face descriptor"
+        }
+      ],
+      "pricing": "Free (open-source)",
+      "framework": "TensorFlow.js"
+    }
+  ],
+
+  "modules": [
+    {
+      "id": "patient",
+      "name": "Patient Module",
+      "icon": "👥",
+      "services": [
+        {
+          "id": "chatbot",
+          "name": "Chatbot Assistant",
+          "endpoint": "POST /api/patient/chatbot",
+          "provider": "Azure OpenAI",
+          "model": "gpt-4",
+          "temperature": 0.7,
+          "maxTokens": 2000,
+          "description": "24/7 conversational assistant for patient guidance and health advice",
+          "features": [
+            "Persistent conversation history",
+            "Contextual responses",
+            "Multilingual support (FR/EN)",
+            "Sensitive response filtering",
+            "Interaction logging for audit"
+          ],
+          "status": "active",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "id": "vitals",
+      "name": "Vital Signs Module",
+      "icon": "❤️",
+      "services": [
+        {
+          "id": "vitalParser",
+          "name": "Vital Signs Parser",
+          "service": "lib/ai/vitalParser.ts",
+          "provider": "Groq",
+          "model": "llama-3.3-70b-versatile",
+          "temperature": 0.3,
+          "maxTokens": 500,
+          "description": "Extract vital signs from voice transcriptions with intelligent parsing",
+          "extractsParameters": [
+            "Systolic BP",
+            "Diastolic BP",
+            "Heart Rate",
+            "Temperature",
+            "Oxygen Saturation",
+            "Weight",
+            "Additional Notes"
+          ],
+          "validation": {
+            "systolicBP": { "min": 50, "max": 250, "unit": "mmHg" },
+            "diastolicBP": { "min": 30, "max": 150, "unit": "mmHg" },
+            "heartRate": { "min": 30, "max": 200, "unit": "bpm" },
+            "temperature": { "min": 35, "max": 42, "unit": "°C" },
+            "oxygenSaturation": { "min": 70, "max": 100, "unit": "%" },
+            "weight": { "min": 30, "max": 300, "unit": "kg" }
+          },
+          "status": "active",
+          "priority": "high"
+        },
+        {
+          "id": "vitalClassification",
+          "name": "AI Vital Status Classification",
+          "service": "lib/services/vitals-ai-status.service.ts",
+          "provider": "Azure OpenAI",
+          "model": "gpt-4o",
+          "temperature": 0.7,
+          "maxTokens": 1500,
+          "description": "Context-aware classification of vital signs beyond simple thresholds",
+          "output": [
+            "Severity level (EXCELLENT to CRITICAL)",
+            "Clinical classification",
+            "Health insights",
+            "Action recommendations",
+            "Risk factors",
+            "Vital correlations"
+          ],
+          "severityLevels": ["EXCELLENT", "GOOD", "FAIR", "POOR", "CRITICAL"],
+          "status": "active",
+          "priority": "high"
+        },
+        {
+          "id": "riskAnalysis",
+          "name": "Risk Analysis Engine",
+          "service": "lib/ai/riskAnalysis.ts",
+          "provider": "Groq",
+          "model": "llama-3.3-70b-versatile",
+          "temperature": 0.3,
+          "maxTokens": 1000,
+          "description": "Intelligent patient risk scoring based on vital history and trends",
+          "output": {
+            "riskScore": "0-100 numeric scale",
+            "riskLevel": "LOW, MODERATE, HIGH, VERY_HIGH, CRITICAL",
+            "trendIndicator": "improving, stable, declining",
+            "concerns": "Array of identified concerns",
+            "recommendations": "Array of action recommendations",
+            "summary": "Clinical summary",
+            "urgency": "low, medium, high, critical"
+          },
+          "riskScaleInterpretation": {
+            "0-30": "Low risk",
+            "31-50": "Moderate risk",
+            "51-75": "High risk",
+            "76-90": "Very high risk",
+            "91-100": "Critical risk"
+          },
+          "status": "active",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "id": "nurse",
+      "name": "Nurse Module",
+      "icon": "👩‍⚕️",
+      "services": [
+        {
+          "id": "reportGeneration",
+          "name": "Automated Report Generation",
+          "service": "lib/ai/reportGeneration.ts",
+          "provider": "Groq",
+          "model": "llama-3.3-70b-versatile",
+          "temperature": 0.5,
+          "maxTokens": 2000,
+          "description": "Generate comprehensive professional nursing reports with analysis and recommendations",
+          "sections": [
+            "Clinical summary",
+            "Vital signs analysis",
+            "Evolution and trends",
+            "Alerts and concerns",
+            "Follow-up plan",
+            "Action recommendations"
+          ],
+          "outputFormat": "Markdown (convertible to PDF/Print)",
+          "status": "active",
+          "priority": "high"
+        },
+        {
+          "id": "quickSummary",
+          "name": "Quick Summary Generation",
+          "service": "lib/ai/reportGeneration.ts",
+          "provider": "Groq",
+          "model": "llama-3.3-70b-versatile",
+          "temperature": 0.5,
+          "maxTokens": 200,
+          "description": "Generate 2-3 sentence clinical summary for dashboard quick view",
+          "useCase": [
+            "Instant nurse dashboard display",
+            "Mobile notifications",
+            "At-a-glance status"
+          ],
+          "status": "active",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "id": "admin",
+      "name": "Admin Module",
+      "icon": "⚙️",
+      "services": [
+        {
+          "id": "adminCopilot",
+          "name": "Admin Copilot - Next Best Actions",
+          "service": "lib/ai/admin-intelligence.ts",
+          "provider": "Azure OpenAI",
+          "model": "gpt-4",
+          "temperature": 0.15,
+          "maxTokens": 1200,
+          "responseFormat": "json_object",
+          "description": "Intelligent AI assistant to recommend priority actions for administrators",
+          "features": [
+            "Intelligent alert analysis",
+            "Action recommendations with confidence scores",
+            "Contextualized navigation",
+            "Pattern detection and learning",
+            "Escalation suggestions"
+          ],
+          "confidenceRange": {
+            "min": 0.35,
+            "max": 0.98,
+            "description": "Clamped to avoid false positives"
+          },
+          "status": "active",
+          "priority": "medium"
+        }
+      ]
+    },
+    {
+      "id": "auth",
+      "name": "Authentication Module",
+      "icon": "🔐",
+      "services": [
+        {
+          "id": "faceRecognition",
+          "name": "Face Recognition Login",
+          "component": "components/FaceLoginModal.tsx",
+          "provider": "Face-API + TensorFlow.js",
+          "framework": "Client-side ML",
+          "description": "Secure and fast authentication using facial recognition",
+          "features": [
+            "Real-time face detection",
+            "Anti-spoofing measures",
+            "Quality validation",
+            "Password fallback",
+            "2FA support"
+          ],
+          "models": [
+            "tinyFaceDetector (detection)",
+            "faceLandmarkNet (landmarks extraction)",
+            "faceRecognitionNet (face descriptor)"
+          ],
+          "status": "active",
+          "priority": "high"
+        }
+      ]
+    },
+    {
+      "id": "wearables",
+      "name": "Wearables Integration",
+      "icon": "⌚",
+      "services": [
+        {
+          "id": "santeconnect",
+          "name": "OAuth2 Santé Connect",
+          "endpoint": "POST /api/wearables/santeconnect/authorize",
+          "provider": "Santé Connect OAuth2",
+          "url": "https://auth.sante-connect.fr",
+          "description": "Secure integration with French health ecosystem for wearable device authorization",
+          "flow": [
+            "User clicks Santé Connect button",
+            "Redirect to authorization endpoint",
+            "User authentication",
+            "Consent prompt",
+            "Authorization code received",
+            "Token exchange",
+            "User info retrieval",
+            "Device registration"
+          ],
+          "status": "active",
+          "priority": "medium"
+        }
+      ]
+    }
+  ],
+
+  "roadmap": [
+    {
+      "service": "Vital Parser",
+      "module": "patient/nurse",
+      "priority": "high",
+      "status": "todo",
+      "estimatedStart": "2026-04-20",
+      "estimatedCompletion": "2026-05-10"
+    },
+    {
+      "service": "Risk Analysis",
+      "module": "dashboard",
+      "priority": "high",
+      "status": "todo",
+      "estimatedStart": "2026-04-25",
+      "estimatedCompletion": "2026-05-15"
+    },
+    {
+      "service": "Report Generation",
+      "module": "nurse",
+      "priority": "high",
+      "status": "todo",
+      "estimatedStart": "2026-05-01",
+      "estimatedCompletion": "2026-05-20"
+    },
+    {
+      "service": "Admin Copilot",
+      "module": "admin",
+      "priority": "medium",
+      "status": "todo",
+      "estimatedStart": "2026-05-10",
+      "estimatedCompletion": "2026-06-01"
+    },
+    {
+      "service": "Translation Service",
+      "module": "global",
+      "priority": "medium",
+      "status": "todo",
+      "estimatedStart": "2026-06-01",
+      "estimatedCompletion": "2026-06-20"
+    },
+    {
+      "service": "Predictive Analytics",
+      "module": "dashboard",
+      "priority": "low",
+      "status": "todo",
+      "estimatedStart": "2026-07-01",
+      "estimatedCompletion": "2026-08-15"
+    }
+  ],
+
+  "documentation": {
+    "files": [
+      {
+        "name": "AI_FEATURES_COMPREHENSIVE.md",
+        "format": "Markdown",
+        "purpose": "Source document, easily editable",
+        "view": "VS Code, text editor, browser"
+      },
+      {
+        "name": "MediFollow_AI_Features_Comprehensive.pdf",
+        "format": "PDF",
+        "purpose": "Professional document for printing/sharing",
+        "view": "Adobe Reader, browser"
+      },
+      {
+        "name": "AI_FEATURES_VISUAL.html",
+        "format": "HTML",
+        "purpose": "Interactive web view with styling",
+        "view": "Browser (Chrome, Firefox, Safari)"
+      },
+      {
+        "name": "AI_FEATURES.json",
+        "format": "JSON",
+        "purpose": "Machine-readable config and reference",
+        "view": "Code editor, programmatic access"
+      },
+      {
+        "name": "AI_INDEX.txt",
+        "format": "Plain Text",
+        "purpose": "Quick reference and index",
+        "view": "Any text editor"
+      }
+    ]
+  },
+
+  "statistics": {
+    "totalProviders": 3,
+    "totalModules": 6,
+    "totalServices": 11,
+    "activeServices": 11,
+    "todoServices": 6,
+    "totalEndpoints": 15
+  },
+
+  "contact": {
+    "support": "support@medifollow.health",
+    "documentation": "docs/",
+    "api": "https://api.medifollow.health"
+  }
+}

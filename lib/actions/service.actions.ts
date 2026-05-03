@@ -46,6 +46,11 @@ export async function getServiceById(serviceId: string) {
 
 export async function createService(data: ServiceInput) {
   try {
+    // Validate required fields
+    if (!data.serviceName || !data.serviceName.trim()) {
+      return { success: false, error: "Service name is required" };
+    }
+
     const service = await prisma.service.create({
       data: {
         serviceName: data.serviceName,
@@ -59,11 +64,20 @@ export async function createService(data: ServiceInput) {
       },
     });
 
-    revalidatePath("/dashboard/admin/services");
+    revalidatePath("/admin/services");
+    
+    // Sync AccessGrants for any assigned patients/doctors
+    if (service.patientIds.length > 0 && service.teamIds.length > 0) {
+      await syncServiceAccessGrants(service.id);
+    }
+    
     return { success: true, service };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Create service error:", error);
-    return { success: false, error: "Failed to create service" };
+    return {
+      success: false,
+      error: error?.message || "Failed to create service",
+    };
   }
 }
 
@@ -92,9 +106,15 @@ export async function updateService(
       data: updateData,
     });
 
-    revalidatePath("/dashboard/admin/services");
-    revalidatePath(`/dashboard/admin/services/${serviceId}`);
-    revalidatePath(`/dashboard/admin/services/${serviceId}/edit`);
+    revalidatePath("/admin/services");
+    revalidatePath(`/admin/services/${serviceId}`);
+    revalidatePath(`/admin/services/${serviceId}/edit`);
+    
+    // Sync AccessGrants when assignments change
+    if (data.patientIds !== undefined || data.teamIds !== undefined) {
+      await syncServiceAccessGrants(service.id);
+    }
+    
     return { success: true, service };
   } catch (error) {
     console.error("Update service error:", error);
@@ -105,11 +125,57 @@ export async function updateService(
 export async function deleteService(serviceId: string) {
   try {
     await prisma.service.delete({ where: { id: serviceId } });
-    revalidatePath("/dashboard/admin/services");
+    revalidatePath("/admin/services");
     return { success: true };
   } catch (error) {
     console.error("Delete service error:", error);
     return { success: false, error: "Failed to delete service" };
+  }
+}
+
+async function syncServiceAccessGrants(serviceId: string) {
+  try {
+    const service = await prisma.service.findUnique({
+      where: { id: serviceId },
+    });
+    if (!service || !service.patientIds || !service.teamIds || service.patientIds.length === 0 || service.teamIds.length === 0) return;
+
+    const teamUsers = await prisma.user.findMany({
+      where: { id: { in: service.teamIds }, role: "DOCTOR" },
+      select: { id: true },
+    });
+    
+    if (teamUsers.length === 0) return;
+    
+    const doctorId = teamUsers[0].id; // Assign first doctor in the team
+
+    for (const patientId of service.patientIds) {
+      // Check if they already have an active primary doctor
+      const existing = await prisma.accessGrant.findFirst({
+        where: { patientId, isActive: true }
+      });
+      
+      if (!existing) {
+        // Create access grant (primary doctor assignment)
+        await prisma.accessGrant.upsert({
+          where: {
+            patientId_doctorId: {
+              patientId,
+              doctorId,
+            },
+          },
+          update: { isActive: true },
+          create: {
+            patientId,
+            doctorId,
+            isActive: true,
+            durationDays: 365,
+          },
+        });
+      }
+    }
+  } catch (error) {
+    console.error("Error syncing access grants:", error);
   }
 }
 
@@ -119,15 +185,21 @@ export async function deleteService(serviceId: string) {
 
 export async function getAssignablePatients() {
   try {
+    const allServices = await prisma.service.findMany({ select: { patientIds: true } });
+    const assignedPatientIds = allServices.flatMap(s => s.patientIds || []);
+
     const users = await prisma.user.findMany({
-      where: { role: "PATIENT" },
+      where: { 
+        role: "PATIENT",
+        id: { notIn: assignedPatientIds }
+      },
       select: { id: true, firstName: true, lastName: true, email: true },
       orderBy: { lastName: "asc" },
     });
 
     const patients = users.map((u) => ({
       id: u.id,
-      label: `${u.firstName} ${u.lastName}`.trim() || u.email,
+      label: `${u.firstName} ${u.lastName} (${u.email})`.trim(),
       email: u.email,
     }));
 
@@ -154,7 +226,7 @@ export async function getAssignableCareTeam() {
 
     const team = users.map((u) => ({
       id: u.id,
-      label: `${u.firstName} ${u.lastName}`.trim() || u.email,
+      label: `${u.firstName} ${u.lastName} (${u.email})`.trim(),
       email: u.email,
       role: u.role,
     }));

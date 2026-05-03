@@ -1,0 +1,39 @@
+// ============================================
+// VOICE TRANSCRIPTS (Add this to end of schema.prisma)
+// ============================================
+
+model VoiceTranscript {
+  id              String       @id @default(auto()) @map("_id") @db.ObjectId
+  vitalRecordId   String       @db.ObjectId
+  nurseId         String       @db.ObjectId
+  transcript      String       // Raw voice transcription
+  parsedData      Json         // AI-extracted vital signs
+  language        String       // "fr" | "en"
+  confidence      Float?       // 0-1 Speech recognition confidence
+  createdAt       DateTime     @default(now())
+  
+  vitalRecord     VitalRecord  @relation(fields: [vitalRecordId], references: [id], onDelete: Cascade)
+  nurse           User         @relation("VoiceTranscripts", fields: [nurseId], references: [id])
+  
+  @@index([vitalRecordId])
+  @@index([nurseId])
+  @@index([createdAt])
+  @@map("voice_transcripts")
+}
+
+// ============================================
+// AI ANALYSIS CACHE (Add this to end of schema.prisma)
+// ============================================
+
+model AIAnalysisCache {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  nurseId         String   @db.ObjectId
+  analysisType    String   // "cohort_insights" | "risk_summary" | "predictions"
+  data            Json     // Cached AI response
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  
+  @@index([nurseId, analysisType])
+  @@index([expiresAt])
+  @@map("ai_analysis_cache")
+}

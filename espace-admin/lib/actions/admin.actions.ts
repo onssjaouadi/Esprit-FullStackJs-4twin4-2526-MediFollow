@@ -45,6 +45,10 @@ function generateRandomPassword(length = 12): string {
 export async function getAllUsers() {
   try {
     const users = await prisma.user.findMany({
+      include: {
+        doctorProfile: true,
+        nurseProfile: true,
+      },
       orderBy: {
         createdAt: "desc",
       },
@@ -57,17 +61,27 @@ export async function getAllUsers() {
   }
 }
 
-// Get user by ID - ADD THIS FUNCTION
-export async function getUserById(id: string) {
+// Get user service assignments
+export async function getUserServiceAssignments(userId: string) {
   try {
-    const user = await prisma.user.findUnique({
-      where: { id },
+    const services = await prisma.service.findMany({
+      where: {
+        OR: [
+          { patientIds: { has: userId } },
+          { teamIds: { has: userId } }
+        ]
+      },
+      select: {
+        id: true,
+        serviceName: true,
+        specializations: true,
+      }
     });
 
-    return user;
+    return { success: true, services };
   } catch (error) {
-    console.error("Error getting user by ID:", error);
-    return null;
+    console.error("Error getting user service assignments:", error);
+    return { success: false, services: [], error: "Failed to load service assignments" };
   }
 }
 

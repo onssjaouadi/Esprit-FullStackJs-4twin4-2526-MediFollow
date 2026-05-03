@@ -38,3 +38,23 @@ next-env.d.ts
 # Sentry Config File
 .env.sentry-build-plugin
 .env
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.env
+*.log
+.vscode/
+.idea/
+node_modules/
+.next/
+dist/
+build/
+.env
+*.log
+node_modules/
+deploy-upload/
+.next/
+dist/
+build/

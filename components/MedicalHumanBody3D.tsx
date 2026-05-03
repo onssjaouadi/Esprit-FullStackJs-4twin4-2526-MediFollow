@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, Suspense } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import {
   OrbitControls,
   PerspectiveCamera,
@@ -12,6 +12,7 @@ import {
   Center,
 } from "@react-three/drei";
 import * as THREE from "three";
+import SafeCanvas from "./SafeCanvas";
 
 // Composant pour charger le modèle 3D depuis le fichier GLB local
 function AnatomicalBody() {
@@ -68,7 +69,7 @@ export default function MedicalHumanBody3D() {
       </div>
 
       {/* Canvas Three.js */}
-      <Canvas shadows camera={{ position: [0, 0.5, 2], fov: 45 }}>
+      <SafeCanvas shadows camera={{ position: [0, 0.5, 2], fov: 45 }}>
         <PerspectiveCamera makeDefault position={[0, 0.5, 2]} fov={45} />
         <OrbitControls
           enableZoom={true}
@@ -146,7 +147,7 @@ export default function MedicalHumanBody3D() {
             transparent
           />
         </mesh>
-      </Canvas>
+      </SafeCanvas>
 
       {/* Instructions d'utilisation */}
       <div className="absolute bottom-4 right-4 z-10">

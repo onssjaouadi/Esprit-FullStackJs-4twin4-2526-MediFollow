@@ -23,6 +23,7 @@ import {
   Activity,
   Pill,
   Stethoscope,
+  Users,
   Plus,
   X,
 } from "lucide-react";
@@ -112,10 +113,15 @@ export default function PatientProfile() {
   });
   const [medications, setMedications] = useState<any[]>([]);
   const [isEditingMedicalProfile, setIsEditingMedicalProfile] = useState(false);
+  const [assignedDoctors, setAssignedDoctors] = useState<any[]>([]);
 
   useEffect(() => {
     loadProfile();
   }, []);
+
+  useEffect(() => {
+    console.log("assignedDoctors state updated:", assignedDoctors);
+  }, [assignedDoctors]);
 
   async function loadProfile() {
     try {
@@ -171,6 +177,7 @@ export default function PatientProfile() {
         if (p.currentMedications && p.currentMedications.length > 0) {
           setMedications(p.currentMedications);
         }
+        setAssignedDoctors(p.assignedDoctors || []);
       } else {
         setPhone(currentUser.phoneNumber || "");
       }
@@ -421,7 +428,7 @@ export default function PatientProfile() {
                   <Move className="size-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-red-900 dark:text-gray-300">
                     <p className="font-semibold mb-1">Astuce :</p>
-                    <p className="text-red-700 dark:text-gray-400">
+                    <p className="text-red-800 dark:text-gray-400">
                       Cliquez et faites glisser pour déplacer l'image, utilisez
                       le curseur pour zoomer
                     </p>
@@ -531,6 +538,100 @@ export default function PatientProfile() {
           </div>
         </div>
 
+        {/* Équipe Médicale (Médecins Assignés) */}
+        <div className="bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-800 p-6 mb-6 shadow-sm">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="size-10 rounded-xl bg-red-50 dark:bg-red-500/10 flex items-center justify-center">
+              <Stethoscope className="size-5 text-red-600 dark:text-red-400" />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              Mon Équipe Médicale
+            </h3>
+          </div>
+
+          {assignedDoctors.length > 0 ? (
+            <div className="grid grid-cols-1 gap-4">
+              {assignedDoctors.map((doc) => (
+                <div
+                  key={doc.id}
+                  className="flex flex-col md:flex-row items-start md:items-center gap-4 p-4 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 hover:border-red-200 dark:hover:border-red-900/30 transition-all"
+                >
+                  {/* Doctor Avatar */}
+                  <div className="size-16 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-white text-xl font-bold shadow-md overflow-hidden flex-shrink-0">
+                    {doc.profileImage ? (
+                      <img
+                        src={doc.profileImage}
+                        alt={doc.name}
+                        className="size-full object-cover"
+                      />
+                    ) : (
+                      doc.name
+                        .split(" ")
+                        .map((n: string) => n[0])
+                        .join("")
+                    )}
+                  </div>
+
+                  {/* Doctor Info */}
+                  <div className="flex-1">
+                    <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3 mb-2">
+                      <h4 className="text-lg font-bold text-gray-900 dark:text-white">
+                        Dr. {doc.name}
+                      </h4>
+                      {doc.specialty && (
+                        <span className="px-2.5 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400 text-xs font-bold uppercase tracking-wider">
+                          {doc.specialty === "CARDIOLOGY"
+                            ? "Cardiologue"
+                            : doc.specialty === "GENERAL_MEDICINE"
+                              ? "Médecin Généraliste"
+                              : doc.specialty}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+                      {doc.email && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <Mail className="size-3.5 text-gray-400" />
+                          {doc.email}
+                        </div>
+                      )}
+                      {doc.phone && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <Phone className="size-3.5 text-gray-400" />
+                          {doc.phone}
+                        </div>
+                      )}
+                      {doc.location && (
+                        <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 md:col-span-2">
+                          <MapPin className="size-3.5 text-gray-400" />
+                          {doc.location}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-8 px-4 rounded-xl border border-dashed border-gray-200 dark:border-gray-800 text-center">
+              <div className="size-12 rounded-full bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center mb-3">
+                <Users className="size-6 text-gray-400" />
+              </div>
+              <p className="text-gray-600 dark:text-gray-400 font-medium">
+                Aucun médecin ne vous a été encore assigné
+              </p>
+              <p className="text-xs text-gray-500 mt-2 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
+                Compte : {user?.email} (ID: {user?.id.substring(0, 8)}...)
+              </p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 mt-3 max-w-xs">
+                Une fois qu'un administrateur vous aura assigné à un service,
+                vos médecins apparaîtront ici.
+              </p>
+            </div>
+          )}
+        </div>
+
         {/* Biographie */}
         {(bio || isEditingBio) && (
           <div className="bg-white dark:bg-gray-900 rounded-2xl border-2 border-gray-200 dark:border-gray-800 p-6 mb-6 shadow-sm">
@@ -546,7 +647,7 @@ export default function PatientProfile() {
               {!isEditingBio && bio && (
                 <button
                   onClick={() => setIsEditingBio(true)}
-                  className="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-500 p-2"
+                  className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-500 p-2"
                   title="Modifier"
                 >
                   <Edit2 className="size-4" />
@@ -628,7 +729,7 @@ export default function PatientProfile() {
             {!isEditingContact && (
               <button
                 onClick={() => setIsEditingContact(true)}
-                className="text-red-600 hover:text-red-700 p-2"
+                className="text-red-600 hover:text-red-800 p-2"
                 title="Modifier"
               >
                 <Edit2 className="size-4" />
@@ -697,7 +798,7 @@ export default function PatientProfile() {
             {!isEditingAddress && (
               <button
                 onClick={() => setIsEditingAddress(true)}
-                className="text-red-600 hover:text-red-700 p-2"
+                className="text-red-600 hover:text-red-800 p-2"
                 title="Modifier"
               >
                 <Edit2 className="size-4" />
@@ -811,7 +912,7 @@ export default function PatientProfile() {
             {!isEditingMedical && (
               <button
                 onClick={() => setIsEditingMedical(true)}
-                className="text-red-600 hover:text-red-700 p-2"
+                className="text-red-600 hover:text-red-800 p-2"
                 title="Modifier"
               >
                 <Edit2 className="size-4" />
@@ -951,7 +1052,7 @@ export default function PatientProfile() {
             {!isEditingEmergency && (
               <button
                 onClick={() => setIsEditingEmergency(true)}
-                className="text-red-600 hover:text-red-700 p-2"
+                className="text-red-600 hover:text-red-800 p-2"
                 title="Modifier"
               >
                 <Edit2 className="size-4" />
@@ -1119,7 +1220,7 @@ export default function PatientProfile() {
             {!isEditingMedicalProfile && (
               <button
                 onClick={() => setIsEditingMedicalProfile(true)}
-                className="text-red-600 hover:text-red-700 p-2"
+                className="text-red-600 hover:text-red-800 p-2"
                 title="Modifier"
               >
                 <Edit2 className="size-4" />

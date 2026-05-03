@@ -26,7 +26,8 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="size-4 opacity-50" />
+      {/* a11y: 1.1.1 Non-text Content – expand chevron is decorative */}
+      <ChevronDown className="size-4 opacity-50" aria-hidden="true" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
@@ -44,7 +45,8 @@ const SelectScrollUpButton = React.forwardRef<
     )}
     {...props}
   >
-    <ChevronUp className="size-4" />
+    {/* a11y: 1.1.1 Non-text Content – scroll chevron is decorative */}
+    <ChevronUp className="size-4" aria-hidden="true" />
   </SelectPrimitive.ScrollUpButton>
 ));
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
@@ -61,7 +63,8 @@ const SelectScrollDownButton = React.forwardRef<
     )}
     {...props}
   >
-    <ChevronDown className="size-4" />
+    {/* a11y: 1.1.1 Non-text Content – scroll chevron is decorative */}
+    <ChevronDown className="size-4" aria-hidden="true" />
   </SelectPrimitive.ScrollDownButton>
 ));
 SelectScrollDownButton.displayName =
@@ -125,7 +128,8 @@ const SelectItem = React.forwardRef<
   >
     <span className="absolute left-2 flex size-3.5 items-center justify-center">
       <SelectPrimitive.ItemIndicator>
-        <Check className="size-4" />
+        {/* a11y: 1.1.1 Non-text Content – check mark is decorative; selection state is conveyed by aria-selected */}
+        <Check className="size-4" aria-hidden="true" />
       </SelectPrimitive.ItemIndicator>
     </span>
 

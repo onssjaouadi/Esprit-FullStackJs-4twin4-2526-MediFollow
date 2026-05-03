@@ -54,7 +54,7 @@ export default function PatientAlertsPage() {
   const getSeverityColor = (severity: string) => {
     switch (severity) {
       case "CRITICAL":
-        return "bg-red-50 text-red-700 border-red-200";
+        return "bg-red-50 text-red-800 border-red-200";
       case "HIGH":
         return "bg-orange-50 text-orange-700 border-orange-200";
       case "MEDIUM":
@@ -71,7 +71,7 @@ export default function PatientAlertsPage() {
           icon: AlertCircle,
           label: "Active",
           color: "text-red-600 bg-red-50",
-          badgeColor: "bg-red-100 text-red-700 border-red-200",
+          badgeColor: "bg-red-100 text-red-800 border-red-200",
         };
       case "ACKNOWLEDGED":
         return {
@@ -151,7 +151,7 @@ export default function PatientAlertsPage() {
                 {totalCount} alertes
               </span>
               {openCount > 0 && (
-                <span className="rounded-full bg-red-50 px-3 py-1.5 font-medium text-red-700">
+                <span className="rounded-full bg-red-50 px-3 py-1.5 font-medium text-red-800">
                   {openCount} actives
                 </span>
               )}
@@ -188,7 +188,7 @@ export default function PatientAlertsPage() {
             onClick={() => setFilter("open")}
             className={`flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap ${
               filter === "open"
-                ? "border-red-300 bg-red-50 text-red-700"
+                ? "border-red-300 bg-red-50 text-red-800"
                 : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800"
             }`}
           >

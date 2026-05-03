@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFollow - Fonctionnalités AI pour Patients</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+          "Ubuntu", "Cantarell", sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* Header */
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        color: #667eea;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .role-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .header p {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .header-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .stat {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+      }
+
+      /* Services Grid */
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .service-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border-left: 4px solid #667eea;
+      }
+
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .service-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+      }
+
+      .service-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .service-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 15px;
+      }
+
+      .service-features {
+        list-style: none;
+        margin: 15px 0;
+        padding: 0;
+      }
+
+      .service-features li {
+        padding: 8px 0;
+        color: #555;
+        font-size: 13px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .service-features li:before {
+        content: "✓ ";
+        color: #667eea;
+        font-weight: bold;
+        margin-right: 8px;
+      }
+
+      .service-features li:last-child {
+        border-bottom: none;
+      }
+
+      .provider-tag {
+        display: inline-block;
+        background: #f0f4ff;
+        color: #667eea;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+
+      /* Status Indicator */
+      .status {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+
+      .status.active {
+        background: #10b981;
+        box-shadow: 0 0 8px #10b981;
+      }
+
+      .status.beta {
+        background: #f59e0b;
+      }
+
+      .status.text {
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 5px;
+      }
+
+      /* CTA Button */
+      .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+
+      .cta-button:hover {
+        transform: translateX(2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+      }
+
+      /* Use Cases Section */
+      .use-cases {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .use-cases h2 {
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 22px;
+        border-bottom: 3px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      .use-cases-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+
+      .use-case {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 3px solid #667eea;
+      }
+
+      .use-case h4 {
+        color: #667eea;
+        margin-bottom: 8px;
+      }
+
+      .use-case p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* Quick Start */
+      .quick-start {
+        background: linear-gradient(
+          135deg,
+          rgba(102, 126, 234, 0.1) 0%,
+          rgba(118, 75, 162, 0.1) 100%
+        );
+        border-radius: 12px;
+        padding: 30px;
+        border: 2px dashed #667eea;
+      }
+
+      .quick-start h2 {
+        color: #667eea;
+        margin-bottom: 20px;
+      }
+
+      .quick-start ol {
+        margin-left: 20px;
+        color: #555;
+      }
+
+      .quick-start li {
+        margin-bottom: 12px;
+        line-height: 1.6;
+      }
+
+      /* Footer */
+      .footer {
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-top: 40px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header h1 {
+          font-size: 22px;
+        }
+
+        .services-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .container {
+          padding: 15px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-content">
+          <div>
+            <h1><span>👥</span> Espace Patient - Fonctionnalités AI</h1>
+            <span class="role-badge">MODE PATIENT</span>
+          </div>
+        </div>
+        <p>
+          Découvrez comment l'intelligence artificielle vous aide à gérer votre
+          santé au quotidien. Accédez à un assistant personnel, suivez vos
+          signes vitaux et restez connecté avec votre équipe médicale.
+        </p>
+        <div class="header-stats">
+          <div class="stat">
+            <div class="stat-number">6</div>
+            <div class="stat-label">Services AI</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">24/7</div>
+            <div class="stat-label">Disponibilité</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Sécurisé</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="services-grid">
+        <!-- 1. Chatbot Assistant -->
+        <div class="service-card">
+          <div class="service-icon">💬</div>
+          <h3>Assistant Chatbot</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Obtenez des conseils de santé 24/7 de votre assistant IA personnel,
+            disponible à tout moment pour répondre à vos questions.
+          </p>
+          <ul class="service-features">
+            <li>Réponses immédiates à vos questions</li>
+            <li>Conversations intelligentes et contextuelles</li>
+            <li>Support multilingue (FR/EN)</li>
+            <li>Historique de conversation persistant</li>
+          </ul>
+          <span class="provider-tag">Azure OpenAI GPT-4</span>
+          <button class="cta-button">Commencer à discuter</button>
+        </div>
+
+        <!-- 2. Vital Signs Parser -->
+        <div class="service-card">
+          <div class="service-icon">🔊</div>
+          <h3>Interpréteur de Santé Vocale</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Dictez vos signes vitaux en langage naturel et l'IA les extrait et
+            valide automatiquement.
+          </p>
+          <ul class="service-features">
+            <li>Reconnaissance de la parole naturelle</li>
+            <li>Extraction de TA, FC, Temp, SpO2</li>
+            <li>Validation automatique des valeurs</li>
+            <li>Notes supplémentaires intelligentes</li>
+          </ul>
+          <span class="provider-tag">Groq Llama 3.3</span>
+          <button class="cta-button">Soumettre mes signes vitaux</button>
+        </div>
+
+        <!-- 3. Vital Status Classification -->
+        <div class="service-card">
+          <div class="service-icon">📊</div>
+          <h3>Classification de Santé Intelligente</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Comprenez le statut réel de votre santé au-delà des simples chiffres
+            avec une analysis contextualisée.
+          </p>
+          <ul class="service-features">
+            <li>Classification en 5 niveaux de sévérité</li>
+            <li>Analyse contextuelle (âge, conditions)</li>
+            <li>Recommandations personnalisées</li>
+            <li>Facteurs de risque identifiés</li>
+          </ul>
+          <span class="provider-tag">Azure OpenAI GPT-4o</span>
+          <button class="cta-button">Voir mon analyse</button>
+        </div>
+
+        <!-- 4. Risk Analysis -->
+        <div class="service-card">
+          <div class="service-icon">⚠️</div>
+          <h3>Analyse de Risque Proactive</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Obtenez un score de risque basé sur vos tendances historiques et vos
+            conditions chroniques.
+          </p>
+          <ul class="service-features">
+            <li>Score de risque 0-100</li>
+            <li>Analyse des tendances</li>
+            <li>Alertes précoces intelligentes</li>
+            <li>Recommandations d'actions</li>
+          </ul>
+          <span class="provider-tag">Groq Llama 3.3</span>
+          <button class="cta-button">Consulter mon risque</button>
+        </div>
+
+        <!-- 5. Face Recognition -->
+        <div class="service-card">
+          <div class="service-icon">🔐</div>
+          <h3>Connexion par Reconnaissance Faciale</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Connectez-vous de manière sécurisée et rapide en utilisant
+            simplement votre visage.
+          </p>
+          <ul class="service-features">
+            <li>Authentification ultra-rapide</li>
+            <li>Protection anti-usurpation</li>
+            <li>Détection de qualité temps réel</li>
+            <li>Fallback par mot de passe disponible</li>
+          </ul>
+          <span class="provider-tag">TensorFlow.js Face-API</span>
+          <button class="cta-button">Activer la connexion faciale</button>
+        </div>
+
+        <!-- 6. Santé Connect Integration -->
+        <div class="service-card">
+          <div class="service-icon">⌚</div>
+          <h3>Connexion Santé Connect - Enzo200</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Connectez votre montre Enzo200 de manière sécurisée via l'écosystème
+            français Santé Connect.
+          </p>
+          <ul class="service-features">
+            <li>Authentification OAuth2 sécurisée</li>
+            <li>Sync automatique des données de santé</li>
+            <li>Partage contrôlé avec médecins</li>
+            <li>Conformité RGPD garantie</li>
+          </ul>
+          <span class="provider-tag">Santé Connect OAuth2</span>
+          <button class="cta-button">Connecter ma montre</button>
+        </div>
+      </div>
+
+      <!-- Use Cases -->
+      <div class="use-cases">
+        <h2>Cas d'Usage Courants</h2>
+        <div class="use-cases-grid">
+          <div class="use-case">
+            <h4>📋 Suivi Quotidien</h4>
+            <p>
+              Enregistrez vos signes vitaux chaque matin via la dictée vocale et
+              recevez des insights instantanés.
+            </p>
+          </div>
+          <div class="use-case">
+            <h4>🚨 Alerte Précoce</h4>
+            <p>
+              Soyez alerté si l'analyse de risque détecte une tendance
+              préoccupante avant qu'elle n'empire.
+            </p>
+          </div>
+          <div class="use-case">
+            <h4>💬 Conseil Instantané</h4>
+            <p>
+              Posez n'importe quelle question de santé à votre chatbot AI et
+              obtenez une réponse en quelques secondes.
+            </p>
+          </div>
+          <div class="use-case">
+            <h4>⌚ Moniteurs Continu</h4>
+            <p>
+              Votre montre Enzo200 envoie automatiquement vos données pour une
+              analyse continue et actualisée.
+            </p>
+          </div>
+          <div class="use-case">
+            <h4>🔒 Accès Sécurisé</h4>
+            <p>
+              Accédez rapidement à votre dossier en utilisant votre visage, sans
+              jamais saisir un mot de passe.
+            </p>
+          </div>
+          <div class="use-case">
+            <h4>📊 Rapports Personnalisés</h4>
+            <p>
+              Recevez des rapports mensuels générés par IA mettant en évidence
+              vos progrès et recommandations.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Start -->
+      <div class="quick-start">
+        <h2>🚀 Premiers Pas</h2>
+        <ol>
+          <li>
+            <strong>Activez la reconnaissance faciale</strong> - Configurez
+            votre profil de sécurité biométrique
+          </li>
+          <li>
+            <strong>Connectez votre montre Enzo200</strong> - Autorisez l'accès
+            via Santé Connect
+          </li>
+          <li>
+            <strong>Soumettez votre profil médical</strong> - Remplissez le
+            questionnaire de santé initial
+          </li>
+          <li>
+            <strong>Commencez à enregistrer vos signes vitaux</strong> -
+            Utilisez la dictée vocale au quotidien
+          </li>
+          <li>
+            <strong>Consultez votre assistant IA</strong> - Posez des questions
+            de santé à tout moment
+          </li>
+          <li>
+            <strong>Suivez votre score de risque</strong> - Consultez vos
+            tendances et recommandations hebdomadaires
+          </li>
+        </ol>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>
+          MediFollow © 2026 | Tous vos services AI de santé en un seul endroit |
+          Sécurisé | Confidentiel | Fiable
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

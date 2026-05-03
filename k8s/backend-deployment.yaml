@@ -1,0 +1,80 @@
+---
+# Backend Deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medifollow-backend
+  namespace: medifollow
+  labels:
+    app: medifollow-backend
+    app.kubernetes.io/name: medifollow-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: medifollow-backend
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: medifollow-backend
+    spec:
+      containers:
+        - name: medifollow-backend
+          image: ghcr.io/YOUR_ORG/medifollow-backend:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: medifollow-config
+            - secretRef:
+                name: medifollow-secrets
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 20
+            failureThreshold: 5
+      imagePullSecrets:
+        - name: ghcr-credentials
+
+---
+# Backend ClusterIP Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: medifollow-backend
+  namespace: medifollow
+  labels:
+    app: medifollow-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: medifollow-backend
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+      protocol: TCP

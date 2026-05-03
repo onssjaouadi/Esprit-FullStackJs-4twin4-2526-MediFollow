@@ -120,7 +120,7 @@ export default function PatientQuestionnairesPage() {
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-              <p className="text-red-700 dark:text-red-400">{error}</p>
+              <p className="text-red-800 dark:text-red-400">{error}</p>
             </div>
           </CardContent>
         </Card>

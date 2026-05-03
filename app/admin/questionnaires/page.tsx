@@ -390,8 +390,8 @@ export default function QuestionnaireManagementPage() {
         <div className="space-y-3">
           {templates.length === 0 && !showForm && (
             <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-700">
-              <FileText size={40} className="mx-auto mb-3 text-slate-400" />
-              <p className="text-sm text-slate-500">No questionnaires yet. Create your first one.</p>
+              <FileText size={40} className="mx-auto mb-3 text-slate-400" aria-hidden="true" />
+              <p className="text-sm text-slate-600 dark:text-slate-400">No questionnaires yet. Create your first one.</p>
             </div>
           )}
           {templates.map((t) => (
@@ -399,7 +399,7 @@ export default function QuestionnaireManagementPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white">{t.title}</h3>
-                  <p className="text-xs text-slate-500">{t.description || "No description"}</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">{t.description || "No description"}</p>
                   <div className="mt-2 flex flex-wrap gap-2 text-[11px]">
                     <span className="rounded bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                       {t.questions.length} question{t.questions.length !== 1 ? "s" : ""}
@@ -440,17 +440,17 @@ export default function QuestionnaireManagementPage() {
 
               {/* Preview questions */}
               <div className="mt-3 border-t border-slate-100 pt-3 dark:border-slate-800">
-                <p className="mb-1 text-[11px] font-semibold text-slate-500">Questions preview:</p>
+                <p className="mb-1 text-[11px] font-semibold text-slate-600 dark:text-slate-400">Questions preview:</p>
                 <ul className="space-y-1">
                   {t.questions.slice(0, 5).map((q, i) => (
                     <li key={i} className="flex items-center gap-2 text-xs text-slate-700 dark:text-slate-300">
-                      <CheckCircle size={12} className="text-slate-400" />
+                      <CheckCircle size={12} className="text-slate-500 dark:text-slate-400" aria-hidden="true" />
                       <span>{q.text}</span>
-                      <span className="text-[10px] text-slate-400">({q.type}{q.required ? ", required" : ""})</span>
+                      <span className="text-[10px] text-slate-600 dark:text-slate-400">({q.type}{q.required ? ", required" : ""})</span>
                     </li>
                   ))}
                   {t.questions.length > 5 && (
-                    <li className="text-[11px] text-slate-400">+{t.questions.length - 5} more...</li>
+                    <li className="text-[11px] text-slate-600 dark:text-slate-400">+{t.questions.length - 5} more...</li>
                   )}
                 </ul>
               </div>

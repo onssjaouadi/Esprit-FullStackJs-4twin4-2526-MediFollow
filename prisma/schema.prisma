@@ -33,6 +33,36 @@ model User {
   createdAt               DateTime  @default(now())
   updatedAt               DateTime  @updatedAt
 
+  // [NEW - SuperAdmin] Soft delete fields
+  isDeleted               Boolean   @default(false)
+  deletedAt               DateTime?
+  deletedById             String?   @db.ObjectId
+  deletedReason           String?
+
+  // [NEW - SuperAdmin] Suspension fields
+  isSuspended             Boolean   @default(false)
+  suspendedAt             DateTime?
+  suspendedById           String?   @db.ObjectId
+  suspensionReason        String?
+  reactivatedAt           DateTime?
+  reactivatedById         String?   @db.ObjectId
+
+  // [NEW - SuperAdmin] Edit tracking fields
+  lastModifiedById        String?   @db.ObjectId
+  lastModifiedAt          DateTime?
+
+  // [NEW - SuperAdmin] Force password change on first login
+  forcePasswordChange     Boolean   @default(false)
+
+  // [NEW - SuperAdmin] Internal notes (visible to SuperAdmin only)
+  internalNotes           String?
+
+  // [NEW - SuperAdmin] Language preference
+  languagePreference      String?   @default("fr") // "fr" | "ar" | "en"
+
+  // [NEW - SuperAdmin] Profile photo URL
+  profilePhoto            String?
+
   // Relations
   patient       Patient?
   doctorProfile DoctorProfile?
@@ -49,6 +79,14 @@ model User {
   analysisRequests AnalysisRequest[] @relation("AnalysisRequestDoctor")  // Analysis requests created by doctor
   sessions      Session[]
 
+  // [NEW - SuperAdmin] Relations for audit
+  superAuditLogsPerformed SuperAuditLog[] @relation("SuperAuditActor")
+  superAuditLogsReceived  SuperAuditLog[] @relation("SuperAuditTarget")
+  editHistoryPerformed    UserEditHistory[] @relation("EditHistoryChangedBy")
+  editHistoryReceived     UserEditHistory[] @relation("EditHistoryUser")
+  suspensionHistory       UserSuspensionHistory[] @relation("SuspensionHistoryUser")
+  suspensionPerformed     UserSuspensionHistory[] @relation("SuspensionHistoryBy")
+
   @@map("users")
 }
 
@@ -59,6 +97,7 @@ enum Role {
   NURSE
   COORDINATOR
   AUDITOR
+  SUPERADMIN // [NEW] Highest authority role — seeded only, never created from UI
 }
 
 // ============================================
@@ -429,6 +468,8 @@ model Service {
   averageDuration   Int?     // in minutes
   isActive          Boolean  @default(true)
   specializations   String[]
+  patientIds        String[] @db.ObjectId // IDs of patients assigned to this service
+  teamIds           String[] @db.ObjectId // IDs of doctors/nurses assigned to this service
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -465,13 +506,13 @@ model QuestionnaireTemplate {
   title           String
   description     String?
   specialty       String?  // Medical specialty
-  doctorId        String   @db.ObjectId  // Doctor who created template
+  doctorId        String?  @db.ObjectId  // Doctor who created template
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
   // Relations
-  doctor          User     @relation("QuestionnaireTemplates", fields: [doctorId], references: [id], onDelete: Cascade)
+  doctor          User?    @relation("QuestionnaireTemplates", fields: [doctorId], references: [id], onDelete: SetNull)
   questions       QuestionnaireQuestion[]
   assignments     QuestionnaireAssignment[]
 
@@ -493,7 +534,7 @@ model QuestionnaireQuestion {
   questionType      String   // TEXT, TEXTAREA, NUMBER, RATING, YESNO, CHOICE, MULTIPLE_CHOICE, DATE, TIME, DATETIME
   description       String?
   required          Boolean  @default(false)
-  options           String[] // For CHOICE and MULTIPLE_CHOICE types (stored as JSON strings for flexibility)
+  options           Json?    // For CHOICE and MULTIPLE_CHOICE types (stored as JSON for flexibility)
   minValue          Int?     // For NUMBER type
   maxValue          Int?     // For NUMBER type
   minLength         Int?     // For TEXT types
@@ -1005,4 +1046,95 @@ model AnalysisRequest {
   @@index([status])
   @@index([requestedAt])
   @@map("analysis_requests")
+}
+
+// ============================================
+// [NEW] SUPER AUDIT LOGS (SuperAdmin-exclusive immutable log)
+// ============================================
+
+model SuperAuditLog {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+
+  // Actor who performed the action
+  actorId       String   @db.ObjectId
+  actorName     String   // Snapshot of name at time of action
+  actorRole     String   // Snapshot of role at time of action
+
+  // Action performed
+  action        String   // USER_CREATED | USER_UPDATED | USER_DELETED | USER_SUSPENDED |
+                         // USER_RESTORED | LOGIN_SUCCESS | LOGIN_FAILED | PASSWORD_RESET |
+                         // PERMISSION_CHANGED | DATA_EXPORTED | USER_REACTIVATED | ...
+
+  // Target of the action (the affected user)
+  targetId      String?  @db.ObjectId
+  targetName    String?  // Snapshot of name at time of action
+  targetRole    String?  // Snapshot of role at time of action
+
+  // Metadata
+  ipAddress     String?
+  device        String?
+  browser       String?
+  changedFields Json?    // [{ field, old_value, new_value }]
+  reason        String?
+  severity      String   @default("INFO") // INFO | WARNING | CRITICAL
+
+  // Timestamps
+  timestamp     DateTime @default(now())
+
+  // Relations
+  actor         User     @relation("SuperAuditActor", fields: [actorId], references: [id])
+  target        User?    @relation("SuperAuditTarget", fields: [targetId], references: [id])
+
+  @@index([actorId])
+  @@index([targetId])
+  @@index([action])
+  @@index([severity])
+  @@index([timestamp])
+  @@map("super_audit_logs")
+}
+
+// ============================================
+// [NEW] USER EDIT HISTORY (per-field change log)
+// ============================================
+
+model UserEditHistory {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId     // The user whose data was changed
+  changedById String   @db.ObjectId     // SuperAdmin who made the change
+  changedAt   DateTime @default(now())
+  fieldName   String                   // e.g. "firstName", "email", "isActive"
+  oldValue    String?
+  newValue    String?
+
+  // Relations
+  user        User     @relation("EditHistoryUser", fields: [userId], references: [id])
+  changedBy   User     @relation("EditHistoryChangedBy", fields: [changedById], references: [id])
+
+  @@index([userId])
+  @@index([changedById])
+  @@index([changedAt])
+  @@map("user_edit_history")
+}
+
+// ============================================
+// [NEW] USER SUSPENSION HISTORY
+// ============================================
+
+model UserSuspensionHistory {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId         String   @db.ObjectId
+  action         String   // "SUSPENDED" | "REACTIVATED"
+  performedById  String   @db.ObjectId
+  reason         String?
+  note           String?
+  performedAt    DateTime @default(now())
+
+  // Relations
+  user           User     @relation("SuspensionHistoryUser", fields: [userId], references: [id])
+  performedBy    User     @relation("SuspensionHistoryBy", fields: [performedById], references: [id])
+
+  @@index([userId])
+  @@index([performedById])
+  @@index([performedAt])
+  @@map("user_suspension_history")
 }

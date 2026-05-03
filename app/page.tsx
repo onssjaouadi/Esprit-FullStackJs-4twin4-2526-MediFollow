@@ -908,7 +908,8 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <div className="mb-2 inline-flex items-center space-x-2 rounded-full bg-orange-600 px-3 py-1 text-xs font-bold">
+                  {/* a11y: 1.4.3 Contrast – orange-700 (#c2410c) gives 4.71:1 with white, up from 3.55:1 */}
+                  <div className="mb-2 inline-flex items-center space-x-2 rounded-full bg-orange-700 px-3 py-1 text-xs font-bold">
                     <Heart className="size-3" />
                     <span>Soins</span>
                   </div>
@@ -931,7 +932,9 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                  <div className="mb-2 inline-flex items-center space-x-2 rounded-full bg-yellow-600 px-3 py-1 text-xs font-bold">
+                  {/* a11y: 1.4.3 Contrast – yellow-800 (#854d0e) gives 6.02:1 with white, up from 2.93:1 */}
+                  {/* yellow-700 (#a16207) only reaches 4.47:1 which still fails; yellow-800 is the minimum passing shade */}
+                  <div className="mb-2 inline-flex items-center space-x-2 rounded-full bg-yellow-800 px-3 py-1 text-xs font-bold">
                     <Star className="size-3" />
                     <span>Satisfaction</span>
                   </div>

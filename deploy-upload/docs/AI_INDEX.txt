@@ -1,0 +1,144 @@
+📖 AI Features Documentation - Index
+
+FICHIERS DISPONIBLES:
+
+1. **MediFollow_AI_Features_Comprehensive.pdf** (📄 PDF)
+   - Document complet et professionnel
+   - Format PDF pour impression et partage
+   - Toutes les fonctionnalités détaillées
+   - À ouvrir avec: Adobe Reader, navigateur
+
+2. **AI_FEATURES_COMPREHENSIVE.md** (📝 Markdown)
+   - Source du document PDF
+   - Facilement éditable
+   - Format texte brut
+   - À lire avec: VS Code, éditeur texte, navigateur
+
+3. **AI_FEATURES_VISUAL.html** (🌐 HTML Interactif)
+   - Version web interactive et colorée
+   - Design responsive et moderne
+   - Tableaux et cartes stylisés
+   - À ouvrir avec: navigateur (Chrome, Firefox, Safari)
+
+---
+
+STRUCTURE DES DOCUMENTS:
+
+Chaque document couvre:
+
+📍 MODULE PATIENT
+├── Chatbot Assistant (Azure OpenAI / GPT-4)
+│   ├── API: POST /api/patient/chatbot
+│   ├── Modèle: GPT-3.5-turbo
+│   └── Fonctionnalités: Conversation, conseils santé
+
+📍 MODULE VITAL SIGNS
+├── Vital Parser (Groq / Llama 3.3)
+│   ├── Service: lib/ai/vitalParser.ts
+│   ├── Extraction: BP, HR, Temp, SpO2, Weight
+│   └── Validation: Plages automatiques
+├── AI Status Classification (Azure OpenAI / GPT-4o)
+│   ├── Service: lib/services/vitals-ai-status.service.ts
+│   ├── Output: Sévérité, insights, recommandations
+│   └── Seuils: EXCELLENT → CRITICAL
+└── Risk Analysis (Groq / Llama 3.3)
+    ├── Service: lib/ai/riskAnalysis.ts
+    ├── Score: 0-100 (Low → Critical)
+    └── Output: Risque + tendances + action items
+
+📍 MODULE INFIRMIÈRE
+├── Report Generation (Groq / Llama 3.3)
+│   ├── Service: lib/ai/reportGeneration.ts
+│   ├── Max Tokens: 2000
+│   └── Output: Rapport markdown formaté
+└── Quick Summary (Groq / Llama 3.3)
+    ├── Max Tokens: 200
+    └── Output: Résumé 2-3 phrases
+
+📍 MODULE ADMIN
+└── Admin Copilot (Azure OpenAI / GPT-4)
+    ├── Service: lib/ai/admin-intelligence.ts
+    ├── Mode: JSON
+    └── Output: Next best actions + confiance
+
+📍 MODULE AUTHENTIFICATION
+└── Face Recognition (TensorFlow.js / Face-API)
+    ├── Component: FaceLoginModal.tsx
+    ├── Modèles: tinyFaceDetector, faceLandmarkNet, faceRecognitionNet
+    └── Features: Real-time detection, anti-spoofing
+
+---
+
+CONFIGURATION RAPIDE:
+
+1. **Groq API**
+   - Key: GROQ_API_KEY=gsk_...
+   - Modèles: llama-3.1, llama-3.3, mixtral
+   - Promo: Gratuit avec rate limit
+   - URL: https://console.groq.com
+
+2. **Azure OpenAI**
+   - Key: AZURE_OPENAI_API_KEY=...
+   - Endpoint: AZURE_OPENAI_ENDPOINT=https://xxx.openai.azure.com/
+   - Deployment: AZURE_OPENAI_DEPLOYMENT=gpt-4
+   - Version: AZURE_OPENAI_API_VERSION=2024-02-15-preview
+
+3. **Santé Connect OAuth**
+   - Client ID: SANTE_CONNECT_CLIENT_ID=...
+   - Client Secret: SANTE_CONNECT_CLIENT_SECRET=...
+   - Redirect: SANTE_CONNECT_REDIRECT_URI=...
+
+---
+
+STATISTIQUES TECHNIQUES:
+
+Service | Provider | Model | Temperature | Max Tokens | Status
+--------|----------|-------|-------------|------------|---------
+Chatbot | Azure | GPT-4 | 0.7 | 2000 | ✅ Active
+Vital Parser | Groq | Llama 3.3 | 0.3 | 500 | ✅ Active
+Status Classification | Azure | GPT-4o | 0.7 | 1500 | ✅ Active
+Risk Analysis | Groq | Llama 3.3 | 0.3 | 1000 | ✅ Active
+Report Generation | Groq | Llama 3.3 | 0.5 | 2000 | ✅ Active
+Admin Copilot | Azure | GPT-4 | 0.15 | 1200 | ✅ Active
+Face Recognition | TensorFlow | Face-API | N/A | N/A | ✅ Active
+
+---
+
+ROADMAP & PRIORITÉS:
+
+Priorité | Service | Module | Statut
+---------|---------|--------|--------
+🔴 Haute | Vital Parser | Patient/Nurse | ⏳ TODO
+🔴 Haute | Risk Analysis | Dashboard | ⏳ TODO
+🔴 Haute | Report Generation | Nurse | ⏳ TODO
+🟡 Moyenne | Admin Copilot | Admin | ⏳ TODO
+🟡 Moyenne | Translation | Global | ⏳ TODO
+🟢 Basse | Predictive | Dashboard | ⏳ TODO
+
+---
+
+COMMENT UTILISER:
+
+1️⃣ POUR LA LECTURE RAPIDE:
+   → Ouvrir: AI_FEATURES_VISUAL.html (dans navigateur)
+   
+2️⃣ POUR L'IMPRIMERIE/PDF:
+   → Ouvrir: MediFollow_AI_Features_Comprehensive.pdf
+   
+3️⃣ POUR L'ÉDITION/DÉVELOPPEMENT:
+   → Ouvrir: AI_FEATURES_COMPREHENSIVE.md (dans VS Code)
+
+---
+
+SUPPORT & QUESTIONS:
+
+📧 Email: support@medifollow.health
+📞 Documentation: docs/ folder
+🌐 Portal: https://docs.medifollow.health
+🔗 API Docs: https://api.medifollow.health
+
+---
+
+Last Updated: April 15, 2026
+Next Update: May 15, 2026
+Version: 1.0

@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MediFollow - Fonctionnalités AI pour Coordinateurs</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+          "Ubuntu", "Cantarell", sans-serif;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* Header */
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .header-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        color: #d97706;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .role-badge {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .header p {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .header-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .stat {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 24px;
+        font-weight: bold;
+        color: #d97706;
+      }
+
+      .stat-label {
+        font-size: 12px;
+        color: #999;
+        margin-top: 5px;
+      }
+
+      /* Services Grid */
+      .services-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+        margin-bottom: 40px;
+      }
+
+      .service-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border-left: 4px solid #d97706;
+      }
+
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
+
+      .service-icon {
+        font-size: 40px;
+        margin-bottom: 15px;
+      }
+
+      .service-card h3 {
+        color: #333;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+
+      .service-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+        margin-bottom: 15px;
+      }
+
+      .service-features {
+        list-style: none;
+        margin: 15px 0;
+        padding: 0;
+      }
+
+      .service-features li {
+        padding: 8px 0;
+        color: #555;
+        font-size: 13px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .service-features li:before {
+        content: "✓ ";
+        color: #d97706;
+        font-weight: bold;
+        margin-right: 8px;
+      }
+
+      .service-features li:last-child {
+        border-bottom: none;
+      }
+
+      .provider-tag {
+        display: inline-block;
+        background: #fef3c7;
+        color: #d97706;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 10px;
+      }
+
+      /* Status Indicator */
+      .status {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+
+      .status.active {
+        background: #d97706;
+        box-shadow: 0 0 8px #d97706;
+      }
+
+      .status.text {
+        font-size: 11px;
+        font-weight: 600;
+        margin-left: 5px;
+      }
+
+      /* CTA Button */
+      .cta-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        margin-top: 15px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+      }
+
+      .cta-button:hover {
+        transform: translateX(2px);
+        box-shadow: 0 5px 15px rgba(217, 119, 6, 0.4);
+      }
+
+      /* Management Section */
+      .management {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .management h2 {
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 22px;
+        border-bottom: 3px solid #d97706;
+        padding-bottom: 10px;
+      }
+
+      .management-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 20px;
+      }
+
+      .management-item {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        border-left: 3px solid #d97706;
+      }
+
+      .management-item h4 {
+        color: #d97706;
+        margin-bottom: 8px;
+      }
+
+      .management-item p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      /* Responsibilities */
+      .responsibilities {
+        background: linear-gradient(
+          135deg,
+          rgba(245, 158, 11, 0.1) 0%,
+          rgba(217, 119, 6, 0.1) 100%
+        );
+        border-radius: 12px;
+        padding: 30px;
+        border: 2px dashed #d97706;
+        margin-bottom: 40px;
+      }
+
+      .responsibilities h2 {
+        color: #d97706;
+        margin-bottom: 20px;
+      }
+
+      .responsibilities ul {
+        margin-left: 20px;
+        color: #555;
+      }
+
+      .responsibilities li {
+        margin-bottom: 12px;
+        line-height: 1.6;
+      }
+
+      /* Footer */
+      .footer {
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        text-align: center;
+        padding: 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        margin-top: 40px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .header h1 {
+          font-size: 22px;
+        }
+
+        .services-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .container {
+          padding: 15px;
+        }
+
+        .header {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header -->
+      <div class="header">
+        <div class="header-content">
+          <div>
+            <h1><span>🏥</span> Espace Coordinateur - Fonctionnalités AI</h1>
+            <span class="role-badge">MODE COORDINATEUR</span>
+          </div>
+        </div>
+        <p>
+          Superviser efficacement l'équipe soignante et les patients avec des
+          outils intelligents. Optimisez l'allocation des ressources, générez
+          des rapports globaux et prenez des décisions stratégiques basées sur
+          les données.
+        </p>
+        <div class="header-stats">
+          <div class="stat">
+            <div class="stat-number">5</div>
+            <div class="stat-label">Services AI</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">👥</div>
+            <div class="stat-label">Supervision</div>
+          </div>
+          <div class="stat">
+            <div class="stat-number">📊</div>
+            <div class="stat-label">Analytics</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services Grid -->
+      <div class="services-grid">
+        <!-- 1. Risk Monitoring -->
+        <div class="service-card">
+          <div class="service-icon">⚠️</div>
+          <h3>Surveillance Active de Risque</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Surveillez le risque de tous vos patients en temps réel avec alertes
+            intelligentes et priorisées.
+          </p>
+          <ul class="service-features">
+            <li>Tableau de bord de risque global</li>
+            <li>Alertes en temps réel prioritaires</li>
+            <li>Historique de tendances par patient</li>
+            <li>Recommandations d'interventions</li>
+          </ul>
+          <span class="provider-tag">Groq Llama 3.3</span>
+          <button class="cta-button">Voir le tableau de bord</button>
+        </div>
+
+        <!-- 2. Report Generation -->
+        <div class="service-card">
+          <div class="service-icon">📊</div>
+          <h3>Génération Batch de Rapports</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Générez des rapports complets pour tous les patients avec un seul
+            clic, format PDF/Markdown.
+          </p>
+          <ul class="service-features">
+            <li>Rapports batch simultanés</li>
+            <li>Formats multiples (PDF, Markdown)</li>
+            <li>Graphiques et visualisations</li>
+            <li>Export pour audits et statistiques</li>
+          </ul>
+          <span class="provider-tag">Groq Llama 3.3</span>
+          <button class="cta-button">Générer rapports</button>
+        </div>
+
+        <!-- 3. Team Copilot -->
+        <div class="service-card">
+          <div class="service-icon">🎯</div>
+          <h3>Copilot Coordinateur - Recommandations Stratégiques</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Obtenez des recommandations de gestion intelligentes basées sur
+            l'état global de votre équipe et vos patients.
+          </p>
+          <ul class="service-features">
+            <li>Recommandations prioritaires d'action</li>
+            <li>Scores de confiance attachés</li>
+            <li>Contexte stratégique expliqué</li>
+            <li>Suggestions d'optimisation</li>
+          </ul>
+          <span class="provider-tag">Azure OpenAI GPT-4</span>
+          <button class="cta-button">Consulter les recommandations</button>
+        </div>
+
+        <!-- 4. Team Status Classification -->
+        <div class="service-card">
+          <div class="service-icon">📋</div>
+          <h3>Classification Globale de Status</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Classifiez automatiquement le statut de santé complet pour chaque
+            patient et équipe.
+          </p>
+          <ul class="service-features">
+            <li>Classification 5-niveaux pour chaque patient</li>
+            <li>Résumés contextuels intelligents</li>
+            <li>Alertes sur changements de status</li>
+            <li>Historique et tendances</li>
+          </ul>
+          <span class="provider-tag">Azure OpenAI GPT-4o</span>
+          <button class="cta-button">Voir la classification</button>
+        </div>
+
+        <!-- 5. Face Recognition -->
+        <div class="service-card">
+          <div class="service-icon">🔐</div>
+          <h3>Authentification Sécurisée Faciale</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Accès rapide et sécurisé aux données critiques avec reconnaissance
+            biométrique.
+          </p>
+          <ul class="service-features">
+            <li>Biométrie multi-niveaux</li>
+            <li>Logs d'audit complets</li>
+            <li>Conformité réglementaire assurée</li>
+            <li>Fallback par badge/PIN</li>
+          </ul>
+          <span class="provider-tag">TensorFlow.js Face-API</span>
+          <button class="cta-button">Configurer biométrie</button>
+        </div>
+
+        <!-- 6. Analytics & Insights -->
+        <div class="service-card">
+          <div class="service-icon">📈</div>
+          <h3>Analytics Prédictives Avancées</h3>
+          <div style="margin-bottom: 10px">
+            <span class="status active"></span>
+            <span class="status text">Actif</span>
+          </div>
+          <p class="service-description">
+            Analysez les patterns et prédictions pour optimiser la gestion des
+            ressources et anticipate les besoins.
+          </p>
+          <ul class="service-features">
+            <li>Prédictions 30 jours</li>
+            <li>Patterns de charge détectés</li>
+            <li>Optimisation des ressources</li>
+            <li>Rapports de performance</li>
+          </ul>
+          <span class="provider-tag">Groq + Prédictif</span>
+          <button class="cta-button">Voir analytics</button>
+        </div>
+      </div>
+
+      <!-- Management Activities -->
+      <div class="management">
+        <h2>🎯 Activités de Coordination Assistées par AI</h2>
+        <div class="management-grid">
+          <div class="management-item">
+            <h4>📊 Tableau de Bord Global</h4>
+            <p>
+              Vue complète de tous les patients, leurs risques, et les alertes
+              prioritaires en un coup d'œil.
+            </p>
+          </div>
+          <div class="management-item">
+            <h4>🚨 Gestion des Alertes</h4>
+            <p>
+              Centralisez et priorisez les alertes de risque, distribuer aux
+              infirmières appropriées.
+            </p>
+          </div>
+          <div class="management-item">
+            <h4>👥 Supervision d'Équipe</h4>
+            <p>
+              Monitorer la charge de travail des infirmières et balancer les
+              affectations patients intelligemment.
+            </p>
+          </div>
+          <div class="management-item">
+            <h4>📋 Rapports Périodiques</h4>
+            <p>
+              Générez des rapports d'état périodiques pour la direction médicale
+              et les stakeholders.
+            </p>
+          </div>
+          <div class="management-item">
+            <h4>🔄 Readmission Risk</h4>
+            <p>
+              Identifiez les patients à risque de réadmission et intervenez
+              proactivement.
+            </p>
+          </div>
+          <div class="management-item">
+            <h4>💡 Optimisation Ressources</h4>
+            <p>
+              Obtenez des recommandations pour optimiser l'utilisation des
+              ressources et réduire les coûts.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Responsibilities -->
+      <div class="responsibilities">
+        <h2>🎓 Responsabilités Facilitées par AI</h2>
+        <ul>
+          <li>
+            <strong>Supervision d'Équipe :</strong> Voir l'état de chaque
+            infirmière et sa charge, recevoir des recos d'équilibrage
+          </li>
+          <li>
+            <strong>Gestion de Crise :</strong> Alertes intelligentes pour
+            escalade rapide et intervention urgente
+          </li>
+          <li>
+            <strong>Planification :</strong> Prédictions de charge pour
+            optimiser les horaires et effectifs
+          </li>
+          <li>
+            <strong>Qualité & Conformité :</strong> Rapports complets et audits
+            simplifiés par la génération automatique
+          </li>
+          <li>
+            <strong>Amélioration Continue :</strong> Analytics de performance
+            pour identifier les domaines d'amélioration
+          </li>
+          <li>
+            <strong>Stratégie :</strong> Recommandations basées données pour
+            décisions managériales
+          </li>
+          <li>
+            <strong>Rentabilité :</strong> Optimisation des ressources et
+            réduction des admissions évitables
+          </li>
+        </ul>
+      </div>
+
+      <!-- Footer -->
+      <div class="footer">
+        <p>
+          MediFollow © 2026 | Coordination Intelligente | Équipes Efficaces |
+          Patients Heureux
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

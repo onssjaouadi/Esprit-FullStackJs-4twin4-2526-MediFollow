@@ -332,19 +332,34 @@ export default function AdminNotificationBell() {
       <button
         type="button"
         onClick={toggleOpen}
-        className="relative flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-800"
+        // a11y: 4.1.2 Name, Role, Value – aria-label already present; add aria-expanded state
+        aria-expanded={isOpen}
+        aria-haspopup="true"
         aria-label="Notifications"
+        className="relative flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:hover:bg-slate-800"
       >
-        <Bell size={18} />
+        {/* a11y: 1.1.1 Non-text Content – bell is decorative; label on the button */}
+        <Bell size={18} aria-hidden="true" />
         {unreadCount > 0 && (
-          <span className="absolute -right-1 -top-1 min-w-5 rounded-full bg-red-600 px-1.5 py-0.5 text-[10px] font-black leading-none text-white">
+          <span
+            aria-hidden="true"
+            className="absolute -right-1 -top-1 min-w-5 rounded-full bg-red-600 px-1.5 py-0.5 text-[10px] font-black leading-none text-white"
+          >
             {badgeLabel}
           </span>
         )}
+        {/* a11y: 4.1.3 Status Messages – screen-reader-only count announcement */}
+        <span className="sr-only">{unreadCount > 0 ? `${unreadCount} notifications non lues` : "Aucune notification non lue"}</span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 top-12 z-50 w-96 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
+        // a11y: 4.1.3 Status Messages – region + aria-live announce new notifications
+        <div
+          role="region"
+          aria-label="Panneau de notifications"
+          aria-live="polite"
+          className="absolute right-0 top-12 z-50 w-96 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900"
+        >
           <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3 dark:border-slate-700">
             <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
               Notifications admin
@@ -388,13 +403,17 @@ export default function AdminNotificationBell() {
                     >
                       <div className="mb-1 flex items-start gap-2">
                         {item.event === "new-alert" ? (
+                          // a11y: 1.1.1 Non-text Content – alert icon is decorative
                           <AlertCircle
                             size={14}
+                            aria-hidden="true"
                             className="mt-0.5 shrink-0 text-indigo-500"
                           />
                         ) : (
+                          // a11y: 1.1.1 Non-text Content – signup icon is decorative
                           <UserPlus
                             size={14}
+                            aria-hidden="true"
                             className="mt-0.5 shrink-0 text-emerald-500"
                           />
                         )}

@@ -33,7 +33,7 @@ export default function AlertDetailContent({ alert, vitalRecord }: any) {
       case "CRITICAL":
         return isDark
           ? "bg-red-500/20 text-red-400 border-red-500/30"
-          : "bg-red-50 text-red-700 border-red-200";
+          : "bg-red-50 text-red-800 border-red-200";
       case "HIGH":
         return isDark
           ? "bg-orange-500/20 text-orange-400 border-orange-500/30"
@@ -57,7 +57,7 @@ export default function AlertDetailContent({ alert, vitalRecord }: any) {
       case "OPEN":
         return isDark
           ? "bg-red-500/20 text-red-400 border-red-500/30"
-          : "bg-red-50 text-red-700 border-red-200";
+          : "bg-red-50 text-red-800 border-red-200";
       case "ACKNOWLEDGED":
         return isDark
           ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
@@ -671,7 +671,7 @@ export default function AlertDetailContent({ alert, vitalRecord }: any) {
                       vitalRecord.status === "CRITIQUE"
                         ? isDark
                           ? "bg-red-500/20 text-red-400 border-red-500/30"
-                          : "bg-red-50 text-red-700 border-red-200"
+                          : "bg-red-50 text-red-800 border-red-200"
                         : vitalRecord.status === "A_VERIFIER"
                           ? isDark
                             ? "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"

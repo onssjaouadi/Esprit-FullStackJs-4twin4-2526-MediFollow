@@ -84,15 +84,19 @@ export default function VitalModal({
             onClick={onClose}
             className="rounded-lg p-2 hover:bg-gray-100 transition-colors"
             title="Fermer"
+            // a11y: 4.1.2 Name, Role, Value – aria-label for icon-only button
+            aria-label="Fermer la fenêtre"
           >
-            <X className="w-5 h-5 text-gray-500" />
+            {/* a11y: 1.1.1 Non-text Content – X icon is decorative */}
+            <X className="w-5 h-5 text-gray-500" aria-hidden="true" />
           </button>
         </div>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-800">
+            // a11y: 4.1.3 Status Messages – role=alert announces form errors to AT
+            <div role="alert" className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-800">
               {error}
             </div>
           )}
@@ -101,11 +105,14 @@ export default function VitalModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Fréquence Cardiaque */}
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Heart className="w-4 h-4 text-red-600" />
+              {/* a11y: 1.3.1 Info and Relationships – htmlFor/id bind label to input */}
+              <label htmlFor="vital-heartRate" className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                {/* a11y: 1.1.1 Non-text Content – decorative icon in label */}
+                <Heart className="w-4 h-4 text-red-600" aria-hidden="true" />
                 Fréquence Cardiaque (bpm)
               </label>
               <input
+                id="vital-heartRate"
                 type="number"
                 name="heartRate"
                 defaultValue={vital?.heartRate || ""}
@@ -119,16 +126,21 @@ export default function VitalModal({
 
             {/* Tension Artérielle */}
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Activity className="w-4 h-4 text-purple-600" />
+              {/* a11y: 1.3.1 Info and Relationships – group label for two pressure inputs */}
+              <p id="vital-bp-label" className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                {/* a11y: 1.1.1 Non-text Content – decorative icon */}
+                <Activity className="w-4 h-4 text-purple-600" aria-hidden="true" />
                 Tension Artérielle (mmHg)
-              </label>
+              </p>
               <div className="grid grid-cols-2 gap-2">
                 <input
                   type="number"
                   name="systolicBP"
                   defaultValue={vital?.systolicBP || ""}
                   placeholder="Systolique"
+                  // a11y: 1.3.1 Info and Relationships – aria-labelledby references group label
+                  aria-labelledby="vital-bp-label"
+                  aria-label="Pression systolique (mmHg)"
                   min="50"
                   max="250"
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -138,6 +150,9 @@ export default function VitalModal({
                   name="diastolicBP"
                   defaultValue={vital?.diastolicBP || ""}
                   placeholder="Diastolique"
+                  // a11y: 1.3.1 Info and Relationships – unique label for second pressure input
+                  aria-labelledby="vital-bp-label"
+                  aria-label="Pression diastolique (mmHg)"
                   min="30"
                   max="150"
                   className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -150,11 +165,14 @@ export default function VitalModal({
 
             {/* Température */}
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Thermometer className="w-4 h-4 text-orange-600" />
+              {/* a11y: 1.3.1 Info and Relationships – htmlFor/id bind label to input */}
+              <label htmlFor="vital-temperature" className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                {/* a11y: 1.1.1 Non-text Content – decorative icon */}
+                <Thermometer className="w-4 h-4 text-orange-600" aria-hidden="true" />
                 Température (°C)
               </label>
               <input
+                id="vital-temperature"
                 type="number"
                 name="temperature"
                 defaultValue={vital?.temperature || ""}
@@ -169,11 +187,14 @@ export default function VitalModal({
 
             {/* Saturation en Oxygène */}
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Wind className="w-4 h-4 text-blue-600" />
+              {/* a11y: 1.3.1 Info and Relationships – htmlFor/id bind label to input */}
+              <label htmlFor="vital-oxygenSaturation" className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                {/* a11y: 1.1.1 Non-text Content – decorative icon */}
+                <Wind className="w-4 h-4 text-blue-600" aria-hidden="true" />
                 Saturation en Oxygène (%)
               </label>
               <input
+                id="vital-oxygenSaturation"
                 type="number"
                 name="oxygenSaturation"
                 defaultValue={vital?.oxygenSaturation || ""}
@@ -187,11 +208,14 @@ export default function VitalModal({
 
             {/* Poids */}
             <div className="md:col-span-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Scale className="w-4 h-4 text-green-600" />
+              {/* a11y: 1.3.1 Info and Relationships – htmlFor/id bind label to input */}
+              <label htmlFor="vital-weight" className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                {/* a11y: 1.1.1 Non-text Content – decorative icon */}
+                <Scale className="w-4 h-4 text-green-600" aria-hidden="true" />
                 Poids (kg)
               </label>
               <input
+                id="vital-weight"
                 type="number"
                 name="weight"
                 defaultValue={vital?.weight || ""}
@@ -205,10 +229,12 @@ export default function VitalModal({
 
             {/* Notes */}
             <div className="md:col-span-2">
-              <label className="text-sm font-medium text-gray-700 mb-2 block">
+              {/* a11y: 1.3.1 Info and Relationships – htmlFor/id bind label to textarea */}
+              <label htmlFor="vital-notes" className="text-sm font-medium text-gray-700 mb-2 block">
                 Notes (optionnel)
               </label>
               <textarea
+                id="vital-notes"
                 name="notes"
                 defaultValue={vital?.notes || ""}
                 placeholder="Observations particulières..."
@@ -233,8 +259,9 @@ export default function VitalModal({
               className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading ? (
+                // a11y: 4.1.3 Status Messages – role=status announces submit progress to AT
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div role="status" aria-label="Enregistrement en cours" className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                   {mode === "create" ? "Enregistrement..." : "Modification..."}
                 </>
               ) : (

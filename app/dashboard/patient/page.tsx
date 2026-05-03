@@ -212,13 +212,13 @@ export default function PatientDashboard() {
                   {alerts.length} alerte{alerts.length > 1 ? "s" : ""} active
                   {alerts.length > 1 ? "s" : ""}
                 </h3>
-                <p className="text-sm text-red-700">
+                <p className="text-sm text-red-800">
                   Certaines de vos mesures nécessitent votre attention
                 </p>
               </div>
               <Link
                 href="/dashboard/patient/alerts"
-                className="text-sm font-medium text-red-700 hover:text-red-900 flex items-center gap-1"
+                className="text-sm font-medium text-red-800 hover:text-red-900 flex items-center gap-1"
               >
                 Voir tout
                 <ChevronRight size={16} />
@@ -433,7 +433,7 @@ export default function PatientDashboard() {
                                 <span
                                   className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium ${
                                     hasAbnormal
-                                      ? "bg-red-100 text-red-700"
+                                      ? "bg-red-100 text-red-800"
                                       : "bg-green-100 text-green-700"
                                   }`}
                                 >

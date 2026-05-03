@@ -241,7 +241,7 @@ const RegisterForm = ({ user }: { user: User }) => {
                     src={doctor.image}
                     width={32}
                     height={32}
-                    alt="doctor"
+                    alt={doctor.name}
                     className="rounded-full border border-dark-500"
                   />
                   <p>{doctor.name}</p>

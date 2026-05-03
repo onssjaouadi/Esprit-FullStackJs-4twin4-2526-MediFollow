@@ -1,5 +1,5 @@
 import { getAlertStats } from "@/lib/actions/alert.actions";
-import { getAllUsers } from "@/lib/actions/admin.actions";
+import { getAllUsers, getGlobalHospitalRisk, getAllPredictiveAlerts, getAllAIRecommendations } from "@/lib/actions/admin.actions";
 import LiveAdminDashboard from "@/components/admin/LiveAdminDashboard";
 import Link from "next/link";
 
@@ -12,6 +12,14 @@ export default async function AdminDashboard() {
     resolved: 0,
   };
   const allUsers = await getAllUsers();
+
+  // Fetch AI data
+  const [riskData, predictiveData, recommendationsData] = await Promise.all([
+    getGlobalHospitalRisk(),
+    getAllPredictiveAlerts(),
+    getAllAIRecommendations(),
+  ]);
+
   const initialStats = {
     totalAlerts: alertData.total || 0,
     criticalAlerts: alertData.critical || 0,
@@ -20,6 +28,13 @@ export default async function AdminDashboard() {
     totalUsers: allUsers.length,
     totalDoctors: allUsers.filter((u: any) => u.role === "DOCTOR").length,
     totalPatients: allUsers.filter((u: any) => u.role === "PATIENT").length,
+    // AI Stats
+    averageRiskScore: riskData.success ? riskData.data.averageRiskScore : 0,
+    criticalRiskPatients: riskData.success ? riskData.data.criticalPatients : 0,
+    highRiskPatients: riskData.success ? riskData.data.highRiskPatients : 0,
+    totalPredictions: predictiveData.success ? predictiveData.data.totalPredictions : 0,
+    highProbabilityPredictions: predictiveData.success ? predictiveData.data.highProbabilityPredictions.length : 0,
+    urgentRecommendations: recommendationsData.success ? recommendationsData.data.urgentRecommendations.length : 0,
   };
 
   return (

@@ -48,11 +48,13 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
       return (
         <div className="flex rounded-md border border-dark-500 bg-dark-400">
           {props.iconSrc && (
+            // a11y: 1.1.1 Non-text Content – field icons are decorative; input is labelled by FormLabel
             <Image
               src={props.iconSrc}
               height={24}
               width={24}
-              alt={props.iconAlt || "icon"}
+              alt=""
+              aria-hidden="true"
               className="ml-2"
             />
           )}
@@ -108,11 +110,13 @@ const RenderInput = ({ field, props }: { field: any; props: CustomProps }) => {
     case FormFieldType.DATE_PICKER:
       return (
         <div className="flex rounded-md border border-dark-500 bg-dark-400">
+          {/* a11y: 1.1.1 Non-text Content – calendar icon is decorative; input is labelled by FormLabel */}
           <Image
             src="/assets/icons/calendar.svg"
             height={24}
             width={24}
-            alt="user"
+            alt=""
+            aria-hidden="true"
             className="ml-2"
           />
           <FormControl>

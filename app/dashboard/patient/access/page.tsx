@@ -216,7 +216,7 @@ export default function PatientAccessPage() {
       {error && (
         <div className="flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 p-4">
           <XCircle className="size-5 text-red-600" />
-          <p className="text-sm text-red-700">{error}</p>
+          <p className="text-sm text-red-800">{error}</p>
         </div>
       )}
 
@@ -430,7 +430,7 @@ function DoctorCard({
           className={`mb-3 flex items-start gap-2 rounded-lg p-2.5 text-xs ${
             result.success
               ? "bg-green-50 text-green-700"
-              : "bg-red-50 text-red-700"
+              : "bg-red-50 text-red-800"
           }`}
         >
           {result.success ? (
@@ -496,7 +496,7 @@ function DoctorCard({
         <button
           onClick={onRevoke}
           disabled={isLoading || disabled}
-          className="w-full flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="w-full flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-800 hover:bg-red-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
           {isLoading ? (
             <Loader2 className="size-4 animate-spin" />

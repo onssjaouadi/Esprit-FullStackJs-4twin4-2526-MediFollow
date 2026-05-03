@@ -1,0 +1,16 @@
+[package]
+name = "MediFollow"
+version = "1.0.0"
+authors = ["MediFollow Team"]
+
+[addresses]
+medifollow_addr = "_"
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "aptos-node-v1.15.0"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-addresses]
+
+[dev-dependencies]

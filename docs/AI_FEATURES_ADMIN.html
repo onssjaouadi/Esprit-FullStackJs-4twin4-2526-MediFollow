@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediFollow - Fonctionnalités AI pour Administrateurs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #6d28d9;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .role-badge {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .header-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #6d28d9;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border-left: 4px solid #6d28d9;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .service-card h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .service-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .service-features {
+            list-style: none;
+            margin: 15px 0;
+            padding: 0;
+        }
+
+        .service-features li {
+            padding: 8px 0;
+            color: #555;
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .service-features li:before {
+            content: "✓ ";
+            color: #6d28d9;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .service-features li:last-child {
+            border-bottom: none;
+        }
+
+        .provider-tag {
+            display: inline-block;
+            background: #ede9fe;
+            color: #6d28d9;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        /* Status Indicator */
+        .status {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .status.active {
+            background: #6d28d9;
+            box-shadow: 0 0 8px #6d28d9;
+        }
+
+        .status.text {
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 5px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            transform: translateX(2px);
+            box-shadow: 0 5px 15px rgba(109, 40, 217, 0.4);
+        }
+
+        /* Admin Dashboard Section */
+        .admin-dashboard {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .admin-dashboard h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 22px;
+            border-bottom: 3px solid #6d28d9;
+            padding-bottom: 10px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .admin-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 3px solid #6d28d9;
+        }
+
+        .admin-item h4 {
+            color: #6d28d9;
+            margin-bottom: 8px;
+        }
+
+        .admin-item p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Governance */
+        .governance {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(109, 40, 217, 0.1) 100%);
+            border-radius: 12px;
+            padding: 30px;
+            border: 2px dashed #6d28d9;
+            margin-bottom: 40px;
+        }
+
+        .governance h2 {
+            color: #6d28d9;
+            margin-bottom: 20px;
+        }
+
+        .governance ul {
+            margin-left: 20px;
+            color: #555;
+        }
+
+        .governance li {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        /* Metrics Table */
+        .metrics-table {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+
+        .metrics-table h2 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 22px;
+            border-bottom: 3px solid #6d28d9;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f3f4f6;
+            color: #6d28d9;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-top: 40px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div>
+                    <h1>
+                        <span>⚙️</span> Espace Administrateur - Fonctionnalités AI
+                    </h1>
+                    <span class="role-badge">MODE ADMINISTRATEUR</span>
+                </div>
+            </div>
+            <p>
+                Gérez l'ensemble de la plateforme MediFollow avec des outils intelligents.
+                Monitorer les performances, contrôler les coûts, analyser les données globales et prendre des décisions stratégiques basées sur des insights complets.
+            </p>
+            <div class="header-stats">
+                <div class="stat">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Services AI</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">🔧</div>
+                    <div class="stat-label">Contrôle</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">📊</div>
+                    <div class="stat-label">Insights</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Grid -->
+        <div class="services-grid">
+            <!-- 1. Admin Copilot -->
+            <div class="service-card">
+                <div class="service-icon">🤖</div>
+                <h3>Admin Copilot - Actions Prioritaires</h3>
+                <div style="margin-bottom: 10px;">
+                    <span class="status active"></span>
+                    <span class="status text">Actif</span>
+                </div>
+                <p class="service-description">
+                    Recevez des recommandations intelligentes sur les meilleures actions à entreprendre maintenant pour gérer la plateforme.
+                </p>
+                <ul class="service-features">
+                    <li>Recommandations prioritaires d'actions</li>
+                    <li>Scores de confiance attachés</li>
+                    <li>Temps estimé pour chaque action</li>
+                    <li>Navigation directe aux outils</li>
+                </ul>
+                <span class="provider-tag">Azure OpenAI GPT-4</span>
+                <button class="cta-button">Voir les actions</button>
+            </div>
+
+            <!-- 2. System Monitoring -->
+            <div class="service-card">
+                <div class="service-icon">📡</div>
+                <h3>Monitoring Système Complet</h3>
+                <div style="margin-bottom: 10px;">
+                    <span class="status active"></span>
+                    <span class="status text">Actif</span>
+                </div>
+                <p class="service-description">
+                    Surveillez la santé globale du système, les performances et les ressources utilisées en temps réel.
+                </p>
+                <ul class="service-features">
+                    <li>Dashboards de performance</li>
+                    <li>Alertes système intelligentes</li>
+                    <li>Historique de charge</li>
+                    <li>Recommandations d'optimisation</li>
+                </ul>
+                <span class="provider-tag">Monitoring AI</span>
+                <button class="cta-button">Voir système</button>
+            </div>
+
+            <!-- 3. AI Services Overview -->
+            <div class="service-card">
+                <div class="service-icon">🧠</div>
+                <h3>Vue d'Ensemble AI & Coûts</h3>
+                <div style="margin-bottom: 10px;">
+                    <span class="status active"></span>
+                    <span class="status text">Actif</span>
+                </div>
+                <p class="service-description">
+                    Analysez l'utilisation et les coûts de tous les services AI avec des rapports détaillés et prédictions.
+                </p>
+                <ul class="service-features">
+                    <li>Coûts par service (Groq, Azure, etc.)</li>
+                    <li>Tendance de coûts 30 jours</li>
+                    <li>ROI par service calculé</li>
+                    <li>Prévisions de budget</li>
+                </ul>
+                <span class="provider-tag">Cost Analytics</span>
+                <button class="cta-button">Voir coûts AI</button>
+            </div>
+
+            <!-- 4. Global Intelligence -->
+            <div class="service-card">
+                <div class="service-icon">🌍</div>
+                <h3>Intelligence Globale de Plateforme</h3>
+                <div style="margin-bottom: 10px;">
+                    <span class="status active"></span>
+                    <span class="status text">Actif</span>
+                </div>
+                <p class="service-description">
+                    Analyserez les patterns globaux, détectez des anomalies et obtenez des insights sur l'utilisation future.
+                </p>
+                <ul class="service-features">
+                    <li>Patterns d'activation d'utilisateurs</li>
+                    <li>Détection de fraude/abus</li>
+                    <li>Prédictions de croissance</li>
+                    <li>Rapport de santé globale</li>
+                </ul>
+                <span class="provider-tag">Groq Llama 3.3</span>
+                <button class="cta-button">Voir intelligence</button>
+            </div>
+
+            <!-- 5. User Management AI -->
+            <div class="service-card">
+                <div class="service-icon">👥</div>
+                <h3>Gestion Intelligente des Utilisateurs</h3>
+                <div style="margin-bottom: 10px;">
+                    <span class="status active"></span>
+                    <span class="status text">Actif</span>
+                </div>
+                <p class="service-description">
+                    Autorisez/rejetez les demandes avec l'AI, détecter les profils suspects, et optimiser les rôles des utilisateurs.
+                </p>
+                <ul class="service-features">
+                    <li>Approbation intelligente de comptes</li>
+                    <li>Détection d'anomalies d'utilisation</li>
+                    <li>Recommandations de rôles</li>
+                    <li>Audit complet des accès</li>
+                </ul>
+                <span class="provider-tag">AI-Powered</span>
+                <button class="cta-button">Gérer utilisateurs</button>
+            </div>
+
+            <!-- 6. Face Recognition Config -->
+            <div class="service-card">
+                <div class="service-icon">🔐</div>
+                <h3>Authentification Biométrique Globale</h3>
+                <div style="margin-bottom: 10px;">
+                    <span class="status active"></span>
+                    <span class="status text">Actif</span>
+                </div>
+                <p class="service-description">
+                    Configurez et supervisez la biométrie faciale pour tous les utilisateurs avec contrôle centralisé.
+                </p>
+                <ul class="service-features">
+                    <li>Gestion centralisée des profils</li>
+                    <li>Logs d'authentification complets</li>
+                    <li>Audit de sécurité biométrique</li>
+                    <li>Conformité réglementaire vérifiée</li>
+                </ul>
+                <span class="provider-tag">TensorFlow.js Face-API</span>
+                <button class="cta-button">Configurer biométrie</button>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div class="admin-dashboard">
+            <h2>📊 Tableaux de Bord Administrateur</h2>
+            <div class="admin-grid">
+                <div class="admin-item">
+                    <h4>🎯 Tableau de Bord Principal</h4>
+                    <p>Vue d'ensemble complète de la plateforme : utilisateurs actifs, patients surveillés, alertes, coûts.</p>
+                </div>
+                <div class="admin-item">
+                    <h4>💰 Gestion des Coûts</h4>
+                    <p>Suivre les dépenses AI par service, comparer à la prévision, identifier les sources de coûts élevés.</p>
+                </div>
+                <div class="admin-item">
+                    <h4>🔧 Maintenance Système</h4>
+                    <p>Monitoring de santé du système, gestion des versions, backups, et catastrophe recovery.</p>
+                </div>
+                <div class="admin-item">
+                    <h4>📈 Rapports Analytiques</h4>
+                    <p>Générez des rapports complets sur la croissance, l'utilisation et la satisfaction utilisateurs.</p>
+                </div>
+                <div class="admin-item">
+                    <h4>🛡️ Sécurité & Conformité</h4>
+                    <p>Audits de sécurité, vérification RGPD/HIPAA, logs d'accès, et gestion des incidents.</p>
+                </div>
+                <div class="admin-item">
+                    <h4>⚡ Optimisation Performance</h4>
+                    <p>Recommendations pour améliorer les performances, réduire la latence et optimiser les ressources.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Metrics Table -->
+        <div class="metrics-table">
+            <h2>📋 Métriques Clés Supervisées par AI</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Métrique</th>
+                        <th>Valeur Actuelle</th>
+                        <th>Cible</th>
+                        <th>Tendance</th>
+                        <th>Recommandation AI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Utilisateurs Actifs</td>
+                        <td>2,547</td>
+                        <td>3,000</td>
+                        <td>📈 +12%</td>
+                        <td>Augmenter marketing</td>
+                    </tr>
+                    <tr>
+                        <td>Coût Groq/jour</td>
+                        <td>$45.23</td>
+                        <td>$50</td>
+                        <td>📉 -8%</td>
+                        <td>Optimiser requêtes</td>
+                    </tr>
+                    <tr>
+                        <td>Temps Réponse API</td>
+                        <td>234ms</td>
+                        <td>200ms</td>
+                        <td>📈 +5%</td>
+                        <td>Augmenter cache</td>
+                    </tr>
+                    <tr>
+                        <td>Uptime Système</td>
+                        <td>99.87%</td>
+                        <td>99.9%</td>
+                        <td>📊 Stable</td>
+                        <td>Excellent - continuer</td>
+                    </tr>
+                    <tr>
+                        <td>Satisfaction Users</td>
+                        <td>4.2/5.0</td>
+                        <td>4.5</td>
+                        <td>📈 +0.3</td>
+                        <td>Améliorer UX</td>
+                    </tr>
+                    <tr>
+                        <td>Incidents/mois</td>
+                        <td>2</td>
+                        <td>0</td>
+                        <td>📉 -1</td>
+                        <td>Excellent - maintenir</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Governance -->
+        <div class="governance">
+            <h2>🏛️ Gouvernance & Responsabilités Administrateur</h2>
+            <ul>
+                <li><strong>Gestion des Accès :</strong> Approuver/rejeter utilisateurs avec vérification des comptes et détection des risques</li>
+                <li><strong>Contrôle des Coûts :</strong> Monitorer les dépenses AI, optimiser l'utilisation des ressources</li>
+                <li><strong>Sécurité & Conformité :</strong> Audits de sécurité, vérification RGPD/HIPAA, gestion des incidents</li>
+                <li><strong>Maintenance Système :</strong> Versions, patches de sécurité, backups et disaster recovery</li>
+                <li><strong>Performance :</strong> Monitoring de la santé, optimisation des ressources, scaling</li>
+                <li><strong>Rapports :</strong> Génération de rapports pour stakeholders, board, et audits externes</li>
+                <li><strong>Innovation :</strong> Évaluation de nouveaux services AI, tests de bêta, rollout de nouvelles fonctionnalités</li>
+                <li><strong>Support :**  Escalade de problèmes critiques, support technique avancé</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>MediFollow © 2026 | Administration Intelligente | Plateforme Fiable | Gestion Optimale</p>
+        </div>
+    </div>
+</body>
+</html>

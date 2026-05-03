@@ -81,6 +81,9 @@ export default function LoginPage() {
           router.push("/admin");
         } else if (role === "AUDITOR") {
           router.push("/dashboard/auditor");
+        } else if (role === "SUPERADMIN") {
+          // [NEW] SuperAdmin redirect
+          router.push("/superadmin");
         } else {
           // Default redirect
           router.push("/");
@@ -343,11 +346,12 @@ export default function LoginPage() {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 hover:text-gray-600"
+                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
                   >
                     {showPassword ? (
-                      <EyeOff className="size-5" />
+                      <EyeOff className="size-5" aria-hidden="true" />
                     ) : (
-                      <Eye className="size-5" />
+                      <Eye className="size-5" aria-hidden="true" />
                     )}
                   </button>
                 </div>
@@ -449,11 +453,12 @@ export default function LoginPage() {
                         copyToClipboard("Patient@123456", "patient")
                       }
                       className="rounded-md bg-blue-100 p-1.5 text-blue-600 transition-all hover:bg-blue-600 hover:text-white hover:scale-110"
+                      aria-label="Copier le mot de passe patient"
                     >
                       {copiedField === "patient" ? (
-                        <Check className="size-3" />
+                        <Check className="size-3" aria-hidden="true" />
                       ) : (
-                        <Copy className="size-3" />
+                        <Copy className="size-3" aria-hidden="true" />
                       )}
                     </button>
                   </div>
@@ -479,11 +484,12 @@ export default function LoginPage() {
                       type="button"
                       onClick={() => copyToClipboard("Doctor@123456", "doctor")}
                       className="rounded-md bg-green-100 p-1.5 text-green-600 transition-all hover:bg-green-600 hover:text-white hover:scale-110"
+                      aria-label="Copier le mot de passe médecin"
                     >
                       {copiedField === "doctor" ? (
-                        <Check className="size-3" />
+                        <Check className="size-3" aria-hidden="true" />
                       ) : (
-                        <Copy className="size-3" />
+                        <Copy className="size-3" aria-hidden="true" />
                       )}
                     </button>
                   </div>
@@ -509,11 +515,12 @@ export default function LoginPage() {
                       type="button"
                       onClick={() => copyToClipboard("Admin@123456", "admin")}
                       className="rounded-md bg-purple-100 p-1.5 text-purple-600 transition-all hover:bg-purple-600 hover:text-white hover:scale-110"
+                      aria-label="Copier le mot de passe admin"
                     >
                       {copiedField === "admin" ? (
-                        <Check className="size-3" />
+                        <Check className="size-3" aria-hidden="true" />
                       ) : (
-                        <Copy className="size-3" />
+                        <Copy className="size-3" aria-hidden="true" />
                       )}
                     </button>
                   </div>

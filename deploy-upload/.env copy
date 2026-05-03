@@ -1,0 +1,102 @@
+# =============================================================================
+# APPWRITE CONFIGURATION
+# =============================================================================
+# Documentation: https://appwrite.io/docs
+# Créez un compte sur https://cloud.appwrite.io/ pour obtenir ces identifiants
+
+# URL de l'endpoint Appwrite (publique - accessible côté client)
+NEXT_PUBLIC_ENDPOINT=https://fra.cloud.appwrite.io/v1
+
+# ID du projet Appwrite
+PROJECT_ID=69a44a5f0000c59533af
+
+# Clé API Appwrite (Keep this secret - server-side only)
+API_KEY=standard_c11ace9893524fae804c7c291806fd6c9397672d66857340c716535b4fea26216cf8c21b0751a519f88cf7c509952fe65d6132b5d7e73586f5d396daa095ea7931141093669802d4803623ae3f9bd7ce9a69689f232c514528e7d1a94efe6c1c6abde30b3684f15c7a8298dc6cebb8eec16543d4b28944fca3725823e80e9584
+
+# ID de la base de données Appwrite
+DATABASE_ID=69a44b0e000cdd810e18
+
+# ID de la collection des patients
+PATIENT_COLLECTION_ID=69a44eef0007e88d2a1e
+
+# ID de la collection des médecins
+DOCTOR_COLLECTION_ID=69a44f0b001b21022a8c
+
+# ID de la collection des rendez-vous
+APPOINTMENT_COLLECTION_ID=69a44f1300357ed151e0
+
+# ID du bucket de stockage Appwrite (publique - pour les documents d'identification)
+NEXT_PUBLIC_BUCKET_ID=69a44fc6001b58606e0e
+
+# =============================================================================
+# SÉCURITÉ & ACCÈS ADMIN
+# =============================================================================
+
+# Code d'accès administrateur (publique - pour accéder à la page admin)
+# Exemple: 123456 (choisissez un code sécurisé)
+NEXT_PUBLIC_ADMIN_PASSKEY=123456
+
+# =============================================================================
+# SENTRY ERROR TRACKING (Optionnel)
+# =============================================================================
+# Documentation: https://docs.sentry.io/platforms/javascript/guides/nextjs/
+# Les DSN sont déjà configurés dans les fichiers sentry.*.config.ts
+# Vous pouvez les remplacer ici si vous voulez utiliser votre propre compte Sentry
+
+# SENTRY_DSN=https://3d627de24f5d06a1fc39000a06ca9a94@o4506813739368448.ingest.us.sentry.io/4507458386526208
+# SENTRY_AUTH_TOKEN=
+
+# =============================================================================
+# NOTES D'INSTALLATION
+# =============================================================================
+# 
+# Pour configurer Appwrite:
+# 1. Créez un compte sur https://cloud.appwrite.io/
+# 2. Créez un nouveau projet
+# 3. Créez une base de données
+# 4. Créez 3 collections: patients, doctors, appointments
+# 5. Créez un bucket de stockage pour les documents
+# 6. Configurez les permissions appropriées pour chaque collection
+# 7. Copiez tous les IDs dans ce fichier .env
+#
+# Structure des collections Appwrite:
+#
+# PATIENTS:
+#   - userId (string)
+#   - name (string)
+#   - email (string)
+#   - phone (string)
+#   - birthDate (datetime)
+#   - gender (string)
+#   - address (string)
+#   - occupation (string)
+#   - emergencyContactName (string)
+#   - emergencyContactNumber (string)
+#   - primaryPhysician (string)
+#   - insuranceProvider (string)
+#   - insurancePolicyNumber (string)
+#   - allergies (string)
+#   - currentMedication (string)
+#   - familyMedicalHistory (string)
+#   - pastMedicalHistory (string)
+#   - identificationType (string)
+#   - identificationNumber (string)
+#   - identificationDocumentId (string)
+#   - identificationDocumentUrl (string)
+#   - privacyConsent (boolean)
+#
+# APPOINTMENTS:
+#   - patient (relationship to patients)
+#   - schedule (datetime)
+#   - status (string: 'pending' | 'scheduled' | 'cancelled')
+#   - primaryPhysician (string)
+#   - reason (string)
+#   - note (string)
+#   - userId (string)
+#   - cancellationReason (string)
+#
+# DOCTORS:
+#   - name (string)
+#   - image (string)
+#
+# =============================================================================

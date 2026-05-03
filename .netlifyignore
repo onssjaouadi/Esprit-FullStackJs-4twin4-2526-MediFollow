@@ -1,0 +1,10 @@
+node_modules
+.next
+.git
+.dist
+coverage
+*.log
+.env
+.env.*
+RAPPORT_AI_FONCTIONNALITES.pdf
+RAPPORT_AI_FONCTIONNALITES_FINAL.pdf
