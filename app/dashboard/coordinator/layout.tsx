@@ -192,11 +192,7 @@ function CoordinatorLayoutInner({ children }: { children: ReactNode }) {
       label: "Revues & signalements",
       href: "/dashboard/coordinator/reviews",
     },
-    {
-      icon: BookOpen,
-      label: "Guide patient",
-      href: "/dashboard/coordinator/guide",
-    },
+
   ];
 
   return (
@@ -289,20 +285,7 @@ function CoordinatorLayoutInner({ children }: { children: ReactNode }) {
                 Paramètres
               </p>
             </div>
-            <Link
-              href="/dashboard/coordinator/guide"
-              className={`group flex items-center gap-4 rounded-xl px-4 py-3 text-sm font-medium transition-all ${
-                pathname === "/dashboard/coordinator/guide"
-                  ? "bg-gradient-to-r from-blue-500/10 to-blue-400/10 dark:from-blue-500/20 dark:to-blue-400/20 text-blue-600 dark:text-blue-400 shadow-sm"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50"
-              }`}
-            >
-              {pathname === "/dashboard/coordinator/guide" && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 h-8 w-1 bg-gradient-to-b from-blue-500 to-blue-400 rounded-r-full"></div>
-              )}
-              <User className="size-5" />
-              <span>Aide & ressources</span>
-            </Link>
+
             <Link
               href="/contact"
               className="group flex items-center gap-4 rounded-xl px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/50"

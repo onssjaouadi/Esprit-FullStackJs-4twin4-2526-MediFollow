@@ -1017,15 +1017,41 @@ export async function getCoordinatorAlerts() {
       : [];
     const userById = Object.fromEntries(users.map((u) => [u.id, u]));
 
+    // Fetch assigned doctors via AccessGrant
+    const accessGrants = await prisma.accessGrant.findMany({
+      where: {
+        patientId: { in: userIds },
+        isActive: true,
+      },
+      select: {
+        patientId: true,
+        doctorId: true,
+      },
+    });
+    const doctorIds = [...new Set(accessGrants.map((ag) => ag.doctorId))];
+    const doctors = await prisma.user.findMany({
+      where: { id: { in: doctorIds } },
+      select: { id: true, firstName: true, lastName: true },
+    });
+    const doctorById = Object.fromEntries(doctors.map((d) => [d.id, d]));
+    const assignedDoctorByPatientUserId = Object.fromEntries(
+      accessGrants.map((ag) => [ag.patientId, doctorById[ag.doctorId]])
+    );
+
     const validAlerts = alerts
       .filter((alert) => alert.patient)
-      .map((alert) => ({
-        ...alert,
-        patient: {
-          ...alert.patient,
-          user: userById[alert.patient!.userId!],
-        },
-      }))
+      .map((alert) => {
+        const patientUser = userById[alert.patient!.userId!];
+        const assignedDoctor = assignedDoctorByPatientUserId[alert.patient!.userId!];
+        return {
+          ...alert,
+          assignedDoctor: assignedDoctor || null,
+          patient: {
+            ...alert.patient,
+            user: patientUser,
+          },
+        };
+      })
       .filter((alert) => alert.patient.user);
 
     return { success: true, alerts: validAlerts };
@@ -1107,10 +1133,24 @@ export async function getCoordinatorPatientIds(coordinatorId: string) {
   }
 }
 
+export async function getAvailableDoctors() {
+  try {
+    const doctors = await prisma.user.findMany({
+      where: { role: "DOCTOR", isActive: true },
+      select: { id: true, firstName: true, lastName: true, email: true },
+      orderBy: { lastName: "asc" },
+    });
+    return { success: true, doctors };
+  } catch (error) {
+    console.error("[getAvailableDoctors]", error);
+    return { success: false, doctors: [] };
+  }
+}
+
 /**
  * Escalate a coordinator alert to a higher severity level
  */
-export async function escalateCoordinatorAlert(alertId: string, note: string) {
+export async function escalateCoordinatorAlert(alertId: string, note: string, doctorId?: string) {
   const auth = await requireCoordinator();
   if (!auth.ok || !auth.user) {
     return { success: false, error: auth.error };
@@ -1121,6 +1161,15 @@ export async function escalateCoordinatorAlert(alertId: string, note: string) {
     return { success: false, error: "Alerte introuvable" };
   }
   const n = note.trim();
+  
+  const alertData: any = {
+    escalatedFromAlertId: alertId,
+    coordinatorId: auth.user.id,
+  };
+  if (doctorId) {
+    alertData.assignedDoctorId = doctorId;
+  }
+  
   const newAlert = await prisma.alert.create({
     data: {
       patientId: alert.patientId,
@@ -1128,10 +1177,7 @@ export async function escalateCoordinatorAlert(alertId: string, note: string) {
       severity: AlertSeverity.HIGH,
       message: `Escalade coordinateur : ${n}`,
       status: AlertStatus.OPEN,
-      data: {
-        escalatedFromAlertId: alertId,
-        coordinatorId: auth.user.id,
-      },
+      data: alertData,
     },
   });
 
@@ -1319,6 +1365,8 @@ export async function getCoordinatorReminderHistory(limit = 50) {
             message: notif.message,
             createdAt: notif.createdAt,
             channels: (notif.sentVia || []) as string[],
+            isRead: notif.isRead || false,
+            readAt: notif.readAt || null,
             patient: {
               user: recipient,
             },
@@ -1329,6 +1377,8 @@ export async function getCoordinatorReminderHistory(limit = 50) {
             message: notif.message,
             createdAt: notif.createdAt,
             channels: (notif.sentVia || []) as string[],
+            isRead: notif.isRead || false,
+            readAt: notif.readAt || null,
             patient: null,
           };
         }

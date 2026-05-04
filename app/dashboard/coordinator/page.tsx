@@ -225,14 +225,7 @@ export default function CoordinatorDashboardPage() {
                     Historique des rappels
                   </Link>
                 </li>
-                <li>
-                  <Link
-                    href="/dashboard/coordinator/guide"
-                    className="text-blue-600 dark:text-blue-400 font-medium hover:underline"
-                  >
-                    Aider les patients à remplir leurs données
-                  </Link>
-                </li>
+
               </ul>
             </div>
             {data.unresolvedFlags > 0 && (
