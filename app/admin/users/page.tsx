@@ -563,7 +563,6 @@ export default function AdminUsersPage() {
             <option value="PATIENT">Patients</option>
             <option value="NURSE">Nurses</option>
             <option value="COORDINATOR">Coordinators</option>
-            <option value="ADMIN">Admins</option>
           </select>
           {(searchQuery || roleFilter !== "ALL") && (
             <button

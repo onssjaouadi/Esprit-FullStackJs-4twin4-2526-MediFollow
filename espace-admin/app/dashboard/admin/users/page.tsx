@@ -520,7 +520,7 @@ export default function AdminUsersPage() {
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Profile Type</label>
                 <div className="grid grid-cols-3 gap-2">
-                  {["PATIENT", "DOCTOR", "NURSE", "COORDINATOR", "ADMIN"].map((r) => (
+                  {["PATIENT", "DOCTOR", "NURSE", "COORDINATOR"].map((r) => (
                     <button 
                       key={r}
                       type="button"

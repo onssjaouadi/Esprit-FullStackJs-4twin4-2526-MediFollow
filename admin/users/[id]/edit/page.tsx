@@ -279,7 +279,6 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                     "DOCTOR",
                     "NURSE",
                     "COORDINATOR",
-                    "ADMIN",
                   ] as const
                 ).map((r) => (
                   <button

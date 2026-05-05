@@ -235,7 +235,7 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                 <Shield size={14} className="text-purple-500" /> User Role
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {(["PATIENT", "DOCTOR", "NURSE", "COORDINATOR", "ADMIN"] as const).map((r) => (
+                {(["PATIENT", "DOCTOR", "NURSE", "COORDINATOR"] as const).map((r) => (
                   <button
                     key={r}
                     type="button"

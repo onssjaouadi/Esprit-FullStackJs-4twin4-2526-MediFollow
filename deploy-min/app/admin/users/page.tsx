@@ -657,7 +657,7 @@ export default function AdminUsersPage() {
                   Profile Type
                 </label>
                 <div className="grid grid-cols-3 gap-2">
-                  {["PATIENT", "DOCTOR", "NURSE", "COORDINATOR", "ADMIN"].map(
+                  {["PATIENT", "DOCTOR", "NURSE", "COORDINATOR"].map(
                     (r) => (
                       <button
                         key={r}

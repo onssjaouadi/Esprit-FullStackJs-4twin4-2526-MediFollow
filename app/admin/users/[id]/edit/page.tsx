@@ -364,7 +364,6 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                     "DOCTOR",
                     "NURSE",
                     "COORDINATOR",
-                    "ADMIN",
                   ] as const
                 ).map((r) => (
                   <button
@@ -379,7 +378,6 @@ export default function EditUserPage({ params }: { params: { id: string } }) {
                   >
                     {r === "PATIENT" && <Activity size={20} />}
                     {r === "DOCTOR" && <UserCog size={20} />}
-                    {r === "ADMIN" && <Shield size={20} />}
                     <span className="text-[10px] font-black uppercase tracking-widest">
                       {r}
                     </span>
